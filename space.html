@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="img/site-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VichSpace Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Hanken+Grotesk:wght@400;500;600&family=Caveat:wght@600&family=IBM+Plex+Sans+Thai:wght@400;500&display=swap">
+<style>
+/* Layout: one pinned scene. Scroll walks you in from Hua Mak Road, settles at the window bar,
+   and the MacBook screen becomes the site. Real-place sections follow on warm paper. */
+:root{
+  --ink:#171a19;        /* black window frames */
+  --ink-2:#262b29;
+  --paper:#f1eee8;      /* white stone counter, slightly warm */
+  --paper-2:#e6e1d7;
+  --oak:#c4471f;        /* VichSpace orange (sofas, backdrops), darkened for text */
+  --navy:#1d3a66;       /* VichSpace navy */
+  --wall:#c5d1db;       /* the café's pale blue wall */
+  --muted:#5f625d;
+  --screen:#f3ebdd;     /* the MacBook's blank screen */
+  --f-display:"Gloock", "Iowan Old Style", Georgia, serif;
+  --f-body:"Hanken Grotesk", "IBM Plex Sans Thai", system-ui, sans-serif;
+  --f-script:"Caveat", "Segoe Print", cursive;
+  --f-thai:"IBM Plex Sans Thai", "Hanken Grotesk", sans-serif;
+  --gut:max(16px, env(safe-area-inset-left, 0px));
+  --gut-r:max(16px, env(safe-area-inset-right, 0px));
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:auto}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--oak);outline-offset:3px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;letter-spacing:-.01em}
+.eyebrow{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+.script{font-family:var(--f-script);font-weight:600;color:var(--oak);font-size:1.18em;line-height:1}
+
+/* ---------- header ---------- */
+.site-head{position:fixed;inset:0 0 auto 0;z-index:50;padding-top:env(safe-area-inset-top,0px);
+  padding-left:var(--gut);padding-right:var(--gut-r);color:var(--paper);transition:background .3s,color .3s}
+.site-head .bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:64px;max-width:1320px;margin:0 auto}
+.site-head.solid{background:color-mix(in srgb,var(--paper) 92%,transparent);color:var(--ink);backdrop-filter:blur(10px);border-bottom:1px solid var(--paper-2)}
+.nav-left{display:flex;gap:26px;font-size:.92rem;font-weight:500}
+.nav-left a{text-decoration:none;opacity:.85}
+.nav-left a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
+.logo{justify-self:center;display:block;line-height:0}
+.logo img{height:40px;width:auto;transition:filter .3s}
+.site-head.solid .logo img{filter:brightness(0) saturate(100%) invert(9%) sepia(8%) saturate(700%) hue-rotate(110deg)}
+.pill{justify-self:end;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;
+  background:var(--paper);color:var(--ink);text-decoration:none;font-weight:600;font-size:.88rem;border:1px solid transparent}
+.site-head.solid .pill{background:var(--ink);color:var(--paper)}
+.pill:hover{background:var(--oak);color:var(--paper)}
+
+/* ---------- walk-in scene ---------- */
+#walk{position:relative;height:760vh;background:var(--ink)}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--ink)}
+#film{position:absolute;inset:0;width:100%;height:100%;display:block}
+.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,16,15,.55) 0%,rgba(14,16,15,0) 30%,rgba(14,16,15,0) 55%,rgba(14,16,15,.7) 100%);pointer-events:none}
+.hero-copy{position:absolute;left:0;right:0;bottom:0;padding:0 var(--gut-r) clamp(40px,8vh,90px) var(--gut);color:var(--paper);pointer-events:none}
+.hero-copy .in{max-width:1320px;margin:0 auto;display:grid;gap:14px}
+.hero-copy h1{font-size:clamp(2.6rem,7.4vw,6.4rem);line-height:.98;max-width:12ch}
+.hero-copy p{margin:0;font-size:clamp(1rem,1.5vw,1.2rem);max-width:44ch;opacity:.92}
+.hero-copy .th{font-family:var(--f-thai);font-size:.95rem;opacity:.8}
+.scroll-cue{position:absolute;right:var(--gut-r);bottom:clamp(40px,8vh,90px);color:var(--paper);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;display:flex;align-items:center;gap:10px;pointer-events:none;margin-right:max(0px,calc((100vw - 1320px)/2))}
+.scroll-cue i{display:block;width:1px;height:46px;background:currentColor;opacity:.6;transform-origin:top;animation:cue 2.2s ease-in-out infinite}
+@keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(0);transform-origin:bottom}}
+.waypoint{position:absolute;left:var(--gut);top:calc(84px + env(safe-area-inset-top,0px));color:var(--paper);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:0;transition:opacity .4s;margin-left:max(0px,calc((100vw - 1320px)/2))}
+.waypoint b{font-family:var(--f-display);font-weight:400;letter-spacing:0;text-transform:none;font-size:1.4rem;display:block;margin-top:4px}
+
+/* the laptop screen overlay; JS sets its box */
+.screen{position:absolute;left:0;top:0;width:0;height:0;overflow:hidden;opacity:0;container-type:inline-size;color:var(--ink);background:var(--screen);border-radius:.6% / 1%}
+.panel{position:absolute;inset:0;padding:6cqi 6.5cqi;display:grid;opacity:0;transform:translateY(2.5cqi);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+.panel.on{opacity:1;transform:none;pointer-events:auto}
+.panel .eyebrow{font-size:2.3cqi;color:var(--oak)}
+.p-about{align-content:center;gap:3cqi}
+.p-about h2{font-size:6.6cqi;line-height:1.08;max-width:24ch}
+.p-about p{margin:0;font-size:2.7cqi;color:var(--muted)}
+.p-list{grid-template-columns:1.25fr 1fr;gap:5cqi;align-items:stretch}
+.p-list .txt{display:flex;flex-direction:column;gap:2.2cqi;min-width:0}
+.p-list h2{font-size:7.4cqi;line-height:1}
+.p-list ul{list-style:none;margin:0;padding:0;display:grid;gap:1.1cqi}
+.p-list li{display:flex;justify-content:space-between;gap:2cqi;font-size:2.65cqi;padding-bottom:1.1cqi;border-bottom:1px solid color-mix(in srgb,var(--ink) 14%,transparent)}
+.p-list li span{color:var(--muted);text-align:right}
+.p-list li:hover{color:var(--oak)}
+.p-list .go{margin-top:auto;font-size:2.5cqi;font-weight:600;text-decoration:none;color:var(--oak)}
+.p-list .go:hover{text-decoration:underline}
+.p-list figure{margin:0;border-radius:1.4cqi;overflow:hidden;min-height:0}
+.p-list figure img{width:100%;height:100%;object-fit:cover;display:block}
+.p-food{grid-template-columns:1fr}
+.p-food ul{grid-template-columns:1fr 1fr;column-gap:5cqi}
+.p-space{align-content:center;gap:2cqi}
+.p-space .num{font-family:var(--f-display);font-size:21cqi;line-height:.9;letter-spacing:-.03em}
+.p-space .num sup{font-size:.28em;vertical-align:top;letter-spacing:0;margin-left:1cqi;font-family:var(--f-body);font-weight:600;position:relative;top:1.6cqi}
+.p-space p{margin:0;font-size:2.9cqi;max-width:48ch}
+.p-space .go{font-size:2.5cqi;font-weight:600;color:var(--oak);text-decoration:none}
+.steps{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:5px;border-radius:999px;background:color-mix(in srgb,var(--ink) 82%,transparent);backdrop-filter:blur(8px);opacity:0;transition:opacity .4s;flex-wrap:wrap;justify-content:center;width:max-content;max-width:calc(100% - 32px)}
+.steps button{all:unset;cursor:pointer;color:var(--paper);font-size:.78rem;letter-spacing:.08em;padding:7px 12px;border-radius:999px;border:1px solid color-mix(in srgb,var(--paper) 30%,transparent);opacity:.7}
+.steps button.on{background:var(--paper);color:var(--ink);opacity:1}
+.steps button:focus-visible{outline:2px solid var(--oak)}
+
+/* ---------- paper sections ---------- */
+.wrap{max-width:1320px;margin:0 auto}
+section.band{padding-left:var(--gut);padding-right:var(--gut-r);padding-block:clamp(72px,11vw,140px)}
+.split{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(32px,6vw,90px);align-items:center}
+.split > *{min-width:0}
+.space-photo{border-radius:6px;overflow:hidden;aspect-ratio:4/5;max-width:100%}
+.space-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.sec-title{font-size:clamp(2.2rem,5vw,4rem);line-height:1.02;margin-top:14px}
+.lede{font-size:1.12rem;max-width:52ch;color:var(--muted);margin:22px 0 0}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;padding:0;list-style:none}
+.facts li{border:1px solid var(--ink);border-radius:999px;padding:7px 14px;font-size:.88rem;font-weight:500}
+.rooms{margin-top:40px;overflow-x:auto}
+.rooms table{width:100%;border-collapse:collapse;font-size:.95rem;min-width:520px}
+.rooms th{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;text-align:left;font-weight:600;color:var(--muted);padding:0 12px 10px 0;border-bottom:1px solid var(--ink)}
+.rooms td{padding:14px 12px 14px 0;border-bottom:1px solid var(--paper-2);vertical-align:top;font-variant-numeric:tabular-nums}
+.rooms td:first-child{font-family:var(--f-display);font-size:1.25rem}
+.rooms .cta-row{margin-top:24px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600;font-size:.95rem}
+.btn:hover{background:var(--oak)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper)}
+
+#menu{background:var(--wall)}
+.menu-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap}
+.menu-head p{margin:0;max-width:40ch;color:var(--ink-2)}
+.menu-grid{margin-top:48px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(20px,3vw,40px)}
+.menu-col h3{font-size:1.5rem;padding-bottom:12px;border-bottom:1px solid var(--ink);margin-bottom:14px}
+.menu-col ul{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:.95rem}
+.menu-col li em{font-style:normal;color:var(--ink-2);opacity:.75;display:block;font-size:.84rem;line-height:1.35}
+.sig{display:inline-block;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;background:var(--ink);color:var(--wall);padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:2px}
+
+.cats{margin-top:40px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.cats a{display:grid;gap:4px;padding:22px 18px;border:1px solid var(--ink);border-radius:8px;text-decoration:none;transition:background .2s,color .2s;min-width:0}
+.cats a b{font-family:var(--f-display);font-weight:400;font-size:1.6rem;line-height:1.05}
+.cats a span{font-size:.86rem;color:var(--ink-2)}
+.cats a:hover{background:var(--ink);color:var(--wall)}
+.cats a:hover span{color:var(--wall)}
+@media (max-width:980px){.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.space-stack{display:grid;gap:10px;min-width:0}
+.space-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.space-strip img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;display:block}
+.rooms-band{background:var(--paper-2)}
+.room-cards{margin-top:40px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.room-cards article{background:var(--paper);border-radius:8px;overflow:hidden;display:grid;grid-template-rows:auto 1fr;min-width:0}
+.room-cards img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
+.room-cards article > div{padding:14px 16px 18px;display:grid;gap:4px;align-content:start}
+.room-cards h3{font-size:1.35rem}
+.room-cards p{margin:0;font-size:.86rem;color:var(--muted)}
+.room-cards .meta{color:var(--ink);font-variant-numeric:tabular-nums}
+.cats a img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:5px;margin-bottom:8px;display:block}
+.cats a{padding:10px 10px 16px}
+.cats a b,.cats a span{padding:0 6px}
+.foot .map{display:block;margin-top:12px;border-radius:6px;overflow:hidden;max-width:260px}
+.foot .map img{display:block;width:100%}
+@media (max-width:1100px){.room-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.room-cards{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.p-list .cta-s{margin-top:auto;align-self:start;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600;font-size:2.5cqi;padding:1.6cqi 3cqi;border-radius:999px}
+.p-list .cta-s:hover{background:var(--oak)}
+.reviews{background:var(--navy);color:var(--paper)}
+.reviews .eyebrow{color:#f2a07e}
+.rev-head{display:grid;gap:4px}
+.rev-grid{margin-top:44px;display:grid;grid-template-columns:1.3fr 1fr 1fr;grid-template-rows:auto auto;gap:16px}
+.rev{margin:0;padding:26px;border-radius:10px;background:color-mix(in srgb,var(--paper) 7%,transparent);border:1px solid color-mix(in srgb,var(--paper) 16%,transparent);display:flex;flex-direction:column;gap:14px;min-width:0}
+.rev.feat{grid-row:span 2;background:var(--paper);color:var(--ink);justify-content:space-between}
+.rev blockquote{margin:0;font-family:var(--f-display);font-size:1.3rem;line-height:1.3}
+.rev.feat blockquote{font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.15}
+.rev .th{margin:0;font-family:var(--f-thai);font-size:.86rem;opacity:.7}
+.rev figcaption{margin-top:auto;font-size:.86rem;opacity:.85}
+.rev figcaption a{color:inherit}
+.rev-grid .rev:last-child{grid-column:span 2}
+.rev-note{margin:22px 0 0;font-size:.8rem;opacity:.65}
+@media (max-width:900px){.rev-grid{grid-template-columns:minmax(0,1fr)}.rev.feat{grid-row:auto}.rev-grid .rev:last-child{grid-column:auto}}
+.gallery{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:14px;margin-top:44px}
+.gallery figure{margin:0;display:grid;gap:10px;min-width:0}
+.gallery .ph{border-radius:6px;overflow:hidden;aspect-ratio:4/3;max-width:100%}
+.gallery .ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s ease}
+.gallery figure:hover img{transform:scale(1.03)}
+.gallery figcaption{font-size:.86rem;color:var(--muted)}
+.gallery figcaption b{color:var(--ink);font-weight:600}
+
+.closing{position:relative;color:var(--paper);background:var(--ink);overflow:hidden}
+.closing .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+.closing .in{position:relative;padding-left:var(--gut);padding-right:var(--gut-r);padding-block:clamp(110px,16vw,200px) 56px}
+.closing h2{font-size:clamp(3rem,9vw,8rem);line-height:.95;max-width:9ch}
+.foot{margin-top:clamp(70px,10vw,130px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;border-top:1px solid color-mix(in srgb,var(--paper) 30%,transparent);padding-top:32px}
+.foot > div{min-width:0}
+.foot h4{margin:0 0 10px;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.7}
+.foot p{margin:0;font-size:.95rem;line-height:1.6}
+.foot a{text-underline-offset:4px}
+.copy{all:unset;cursor:pointer;font-size:.78rem;border:1px solid color-mix(in srgb,var(--paper) 40%,transparent);border-radius:999px;padding:2px 9px;margin-left:6px}
+.copy:focus-visible{outline:2px solid var(--oak)}
+.fine{margin-top:44px;font-size:.8rem;opacity:.6;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:980px){
+  .menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .foot{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .nav-left{display:flex;gap:14px;font-size:.84rem}
+  .logo img{height:30px}
+  .p-list{grid-template-columns:1fr}
+  .p-list figure{display:none}
+  .p-list li{font-size:max(11px,2.65cqi)}
+  .p-list .go,.panel .eyebrow{font-size:max(10px,2.5cqi)}
+  .p-about p,.p-space p{font-size:max(11.5px,2.9cqi)}
+  .p-food ul{grid-template-columns:1fr}
+  .p-food li:nth-child(n+6){display:none}
+  .steps button{padding:6px 9px;font-size:.72rem}
+  .site-head .bar{grid-template-columns:auto 1fr auto;gap:10px}
+  .logo{justify-self:center}
+  .pill{padding:8px 13px;font-size:.8rem}
+  .split{grid-template-columns:1fr}
+  .space-photo{aspect-ratio:4/3}
+  .gallery{grid-template-columns:1fr}
+  .menu-grid{grid-template-columns:1fr}
+  .foot{grid-template-columns:1fr}
+  .scroll-cue{display:none}
+  #walk{height:680vh}
+}
+@media (prefers-reduced-motion:reduce){
+  .scroll-cue i{animation:none}
+  .panel{transition:none}
+}
+</style>
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0} [hidden]{display:none!important} img{max-width:100%}
+.nav-left a[aria-current]{opacity:1;text-decoration:underline;text-underline-offset:6px;text-decoration-color:var(--oak);text-decoration-thickness:2px}
+.page-hero{position:relative;color:var(--paper);background:var(--ink);overflow:hidden}
+.page-hero > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.6}
+.page-hero .in{position:relative;padding-left:var(--gut);padding-right:var(--gut-r);padding-block:clamp(140px,18vw,220px) clamp(48px,7vw,90px)}
+.page-hero h1{font-size:clamp(2.8rem,7vw,6rem);line-height:.98;max-width:12ch;margin-top:12px}
+.page-hero p{max-width:46ch;font-size:1.1rem;margin:16px 0 0;opacity:.95}
+.page-hero .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.page-hero .btn{background:var(--paper);color:var(--ink)}
+.page-hero .btn:hover{background:var(--oak);color:var(--paper)}
+.page-hero .btn.ghost{background:transparent;color:var(--paper);border:1px solid var(--paper)}
+</style>
+</head>
+<body>
+<header class="site-head solid" id="head">
+  <div class="bar">
+    <nav class="nav-left" aria-label="Main">
+      <a href="space.html" aria-current="page">Space</a>
+      <a href="menu.html">Menu</a>
+    </nav>
+    <a class="logo" href="index.html" aria-label="VichSpace home"><img src="img/logo.svg" alt="VichSpace Café and Co-Working"></a>
+    <a class="pill" href="https://line.me/ti/p/~@vichspace" target="_blank" rel="noopener">Book a Seat</a>
+  </div>
+</header>
+<main>
+<section class="page-hero">
+  <img src="img/gallery-3.webp" alt="">
+  <div class="in"><div class="wrap">
+    <span class="eyebrow">The space · 6/4 Hua Mak Road</span>
+    <h1>Room to work, rooms to meet.</h1>
+    <p>A bright café downstairs, a free co-working floor upstairs, and five meeting rooms for 4 to 50 people.</p>
+    <div class="row"><a class="btn" href="#rooms">See meeting rooms</a><a class="btn ghost" href="https://line.me/ti/p/~@vichspace" target="_blank" rel="noopener">Book on LINE</a></div>
+  </div></div>
+</section>
+<section class="band" id="cowork">
+  <div class="wrap split">
+    <div>
+      <span class="eyebrow" style="color:var(--oak)">Upstairs · 2nd floor</span>
+      <h2 class="sec-title">Work all day. It's free.</h2>
+      <p class="lede">The co-working floor is open to everyone who orders downstairs. Take a desk, plug in, and stay until close. When you need a door that shuts, book a room.</p>
+      <ul class="facts"><li>Free Wi-Fi</li><li>Outlets at every table</li><li>Parking in the building</li><li>Open 7:00–20:00 daily</li></ul>
+      <div class="cta-row" style="margin-top:28px;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+        <a class="btn" href="https://line.me/ti/p/~@vichspace" target="_blank" rel="noopener">Book a seat on LINE</a>
+        <span style="color:var(--muted);font-size:.92rem">or call +66 86 341 4867</span>
+      </div>
+    </div>
+    <div class="space-stack">
+      <div class="space-photo"><img src="img/cowork-2.webp" alt="Co-working lounge with navy sofas and orange cushions"></div>
+      <div class="space-strip"><img src="img/cowork-1.webp" alt="Booth seating with pendant lights" loading="lazy"><img src="img/cowork-3.webp" alt="Oak-panelled corner with lamps" loading="lazy"><img src="img/cowork-4.webp" alt="Round standing table with stools" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section class="band rooms-band" id="rooms">
+  <div class="wrap">
+    <div class="menu-head">
+      <div><span class="eyebrow" style="color:var(--oak)">Meeting rooms</span><h2 class="sec-title">A door that shuts, for 4 to 50</h2></div>
+      <p>Screens in every room, plus whiteboards, projectors and live streaming where you need them. Book on LINE or call +66 86 341 4867.</p>
+    </div>
+    <div class="room-cards">
+      <article><img src="img/room-espresso.webp" alt="Espresso meeting room" loading="lazy"><div><h3>Espresso</h3><p class="meta"><b>4</b> seats · from <b>฿250</b></p><p>Monitor, Wi-Fi</p></div></article>
+      <article><img src="img/room-macchiato.webp" alt="Macchiato meeting room" loading="lazy"><div><h3>Macchiato</h3><p class="meta"><b>6</b> seats · from <b>฿350</b></p><p>Monitor, Wi-Fi</p></div></article>
+      <article><img src="img/room-latte.webp" alt="Latte meeting room" loading="lazy"><div><h3>Latte</h3><p class="meta"><b>8</b> seats · from <b>฿450</b></p><p>Monitor, whiteboard, presentation set, Wi-Fi</p></div></article>
+      <article><img src="img/room-multi.webp" alt="Multi-purpose room set up classroom style" loading="lazy"><div><h3>Multi-Purpose</h3><p class="meta"><b>15–30</b> seats · ask us</p><p>Presentation chart, Wi-Fi</p></div></article>
+      <article><img src="img/room-event.webp" alt="Event space with rows of chairs" loading="lazy"><div><h3>Event Space</h3><p class="meta"><b>50</b> seats · ask us</p><p>Presentation chart, Wi-Fi, live streaming</p></div></article>
+    </div>
+    <a class="btn" href="https://line.me/ti/p/~@vichspace" target="_blank" rel="noopener" style="margin-top:28px">Book a room on LINE</a>
+  </div>
+</section>
+
+<section class="band" id="inside">
+  <div class="wrap">
+    <span class="eyebrow" style="color:var(--oak)">Downstairs</span>
+    <h2 class="sec-title">Glass on three sides, oak and white stone.</h2>
+    <div class="gallery">
+      <figure><div class="ph"><img src="img/gallery-1.webp" alt="Window seats with a grey sofa and oak chairs" loading="lazy"></div><figcaption><b>Ground floor.</b> Window seats and sofas for longer stays.</figcaption></figure>
+      <figure><div class="ph"><img src="img/counter.jpg" alt="Coffee bar and cake display" loading="lazy"></div><figcaption><b>The bar.</b> Coffee, cakes and the day's pastries.</figcaption></figure>
+      <figure><div class="ph"><img src="img/seating.jpg" alt="Café seating with oak chairs and a white sofa" loading="lazy"></div><figcaption><b>The café.</b> Tables by the windows.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="closing" id="visit">
+  <img class="bg" src="img/exterior.jpg" alt="" loading="lazy">
+  <div class="in"><div class="wrap">
+    <h2>See you in <span class="script" style="color:var(--paper)">Hua Mak.</span></h2>
+    <div class="foot">
+      <div><h4>Find us</h4><p>6/4 Hua Mak Road, Hua Mak<br>Bang Kapi, Bangkok 10240</p><p style="margin-top:10px"><a href="https://www.google.com/maps/search/?api=1&amp;query=13.7524904,100.6392079" target="_blank" rel="noopener">Open in Google Maps →</a></p><a class="map" href="https://www.google.com/maps/search/?api=1&amp;query=13.7524904,100.6392079" target="_blank" rel="noopener"><img src="img/map.webp" alt="Map to VichSpace on Hua Mak Road" loading="lazy"></a></div>
+      <div><h4>Hours</h4><p>Every day<br>7:00 – 20:00</p></div>
+      <div><h4>Talk to us</h4><p><span id="phone">+66 86 341 4867</span><button class="copy" data-copy="+66 86 341 4867" type="button">Copy</button><br>LINE <a href="https://line.me/ti/p/~@vichspace" target="_blank" rel="noopener">@vichspace</a></p></div>
+      <div><h4>Follow</h4><p><a href="https://www.instagram.com/vichspace/" target="_blank" rel="noopener">Instagram</a><br><a href="https://www.facebook.com/VichSpace/" target="_blank" rel="noopener">Facebook</a></p></div>
+    </div>
+    <div class="fine"><span>© 2026 VichSpace Café and Co-Working Space · <a href="menu.html">Menu</a> · <a href="space.html">Space</a></span><span lang="th" style="font-family:var(--f-thai)">ร้านกาแฟสุดชิคย่านหัวหมาก</span></div>
+  </div></div>
+</section>
+</main>
+<script>
+(() => {
+  // copy phone
+  document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', () => {
+    const t = b.dataset.copy;
+    const done = () => { b.textContent = 'Copied'; setTimeout(()=>b.textContent='Copy',1600); };
+    try { navigator.clipboard.writeText(t).then(done, () => sel()); } catch(e){ sel(); }
+    function sel(){ const r = document.createRange(); r.selectNodeContents(document.getElementById('phone')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  }));
+})();
+</script>
+</body>
+</html>

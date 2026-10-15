@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="img/site-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VichSpace Menu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Hanken+Grotesk:wght@400;500;600&family=Caveat:wght@600&display=swap">
+<style>
+/* Layout: the café's blue wall and oak floor as a room. A dish turns on the wall, its name beside it,
+   a card on the white stone bar, a tray of thumbnails, and a dock to change the menu. */
+:root{
+  --ink:#171a19; --ink-2:#2c312f; --paper:#f1eee8; --paper-2:#e6e1d7;
+  --oak:#a8773f; --oak-2:#c99a62; --wall:#d3dce4; --stone:#f7f6f2; --muted:#5f625d;
+  --tint:#c49a6c;
+  --f-display:"Gloock","Iowan Old Style",Georgia,serif;
+  --f-body:"Hanken Grotesk",system-ui,sans-serif;
+  --f-script:"Caveat","Segoe Print",cursive;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{background:var(--wall);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%}
+[hidden]{display:none!important}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--oak);outline-offset:3px;border-radius:6px}
+
+/* header */
+.site-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--paper-2)}
+.bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:64px;max-width:1320px;margin:0 auto}
+.nav-left{display:flex;gap:26px;font-size:.92rem;font-weight:500}
+.nav-left a{text-decoration:none;opacity:.8}
+.nav-left a[aria-current]{opacity:1;text-decoration:underline;text-underline-offset:6px;text-decoration-color:var(--oak);text-decoration-thickness:2px}
+.nav-left a:hover{opacity:1}
+.logo{justify-self:center;display:block;line-height:0}
+.logo img{height:38px;width:auto;filter:brightness(0) saturate(100%) invert(9%) sepia(8%) saturate(700%) hue-rotate(110deg)}
+.logo small{font-family:var(--f-body);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;display:block;text-align:center;margin-top:2px;opacity:.75}
+.pill{justify-self:end;padding:10px 18px;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600;font-size:.88rem}
+.pill:hover{background:var(--oak)}
+
+/* room */
+@property --bg1{syntax:'<color>';inherits:true;initial-value:#b5774f}
+@property --bg2{syntax:'<color>';inherits:true;initial-value:#b5774f}
+@property --on{syntax:'<color>';inherits:true;initial-value:#f7f3ec}
+.room{--on:#f7f3ec;position:relative;overflow:hidden;color:var(--on);background:linear-gradient(180deg,var(--bg1) 0%,var(--bg1) 45%,var(--bg2) 100%)!important;transition:--bg1 .8s ease,--bg2 .8s ease,--on .5s ease;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 0;
+  background:var(--wall)}
+.room::after{display:none;content:"";position:absolute;left:0;right:0;bottom:0;height:120px;z-index:0;
+  background:repeating-linear-gradient(90deg,transparent 0 158px,rgba(120,116,108,.35) 158px 160px),repeating-linear-gradient(0deg,transparent 0 58px,rgba(120,116,108,.3) 58px 60px),linear-gradient(180deg,#cfccc5,#dedbd4);box-shadow:inset 0 12px 18px -12px rgba(0,0,0,.3)}
+.blob{position:absolute;z-index:0;width:min(78vw,900px);aspect-ratio:1;border-radius:50%;left:-14vw;top:-26%;
+  background:radial-gradient(circle at 40% 40%,color-mix(in srgb,var(--tint) 46%,transparent),color-mix(in srgb,var(--tint) 0%,transparent) 68%);transition:background .7s ease}
+.lamp{position:absolute;z-index:1;top:0;right:calc(max(16px,env(safe-area-inset-right,0px)) + 7%);width:64px;pointer-events:none}
+.lamp i{display:block;width:2px;height:70px;margin:0 auto;background:var(--ink-2)}
+.lamp b{display:block;width:64px;height:34px;border-radius:40px 40px 6px 6px;background:var(--stone);box-shadow:0 18px 40px rgba(255,236,190,.65),inset 0 -6px 0 rgba(0,0,0,.06)}
+.counter{position:absolute;z-index:0;right:0;bottom:120px;width:min(40%,520px);height:46%;background:linear-gradient(180deg,var(--stone),#ebe8e1);border-top:10px solid #fff;box-shadow:-20px 0 40px -30px rgba(0,0,0,.4)}
+
+.stage{position:relative;z-index:2;max-width:1320px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(260px,330px);grid-template-areas:"dish name card" "tray tray card" "dock dock dock";column-gap:clamp(20px,3vw,48px);row-gap:22px;align-items:center}
+.dish-wrap{grid-area:dish;position:relative;aspect-ratio:1;max-width:470px;width:100%;justify-self:center}
+.dish{position:absolute;inset:0;transform-origin:50% 120%}
+.dish.svg{filter:drop-shadow(0 26px 30px rgba(30,25,15,.28)) drop-shadow(0 6px 8px rgba(30,25,15,.18))}
+.dish img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;
+  -webkit-mask-image:radial-gradient(closest-side,#000 76%,transparent 100%);mask-image:radial-gradient(closest-side,#000 76%,transparent 100%)}
+.dish svg{width:100%;height:100%;display:block}
+.name{grid-area:name;min-width:0;display:grid;gap:14px}
+.name .cat{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.85}
+.name h1{margin:0;font-weight:400;line-height:.9;display:grid}
+.name .l1{font-family:var(--f-script);color:inherit;opacity:.9;font-size:clamp(2rem,3.6vw,3.3rem);line-height:1;min-height:1em}
+.name .l2{font-family:var(--f-display);font-size:clamp(3rem,6.4vw,6.2rem);letter-spacing:-.02em;text-wrap:balance;overflow-wrap:anywhere}
+.name .clip{display:block;overflow:hidden;padding-bottom:.08em}
+.name .clip > span{display:block}
+.name .count{font-variant-numeric:tabular-nums;font-size:.85rem;opacity:.75}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600;font-size:.88rem;border:0;cursor:pointer}
+.btn:hover{background:var(--oak)}
+.btn.ghost{background:transparent;color:var(--on);border:1px solid var(--on)}
+.btn.ghost:hover{background:var(--on);color:var(--bg1)}
+.room .btn:not(.ghost){background:var(--on);color:var(--bg1)}
+.room .btn:not(.ghost):hover{background:var(--ink);color:var(--paper)}
+
+.card{grid-area:card;align-self:stretch;display:flex;flex-direction:column;justify-content:center;gap:0}
+.card .inner{color:var(--ink);background:var(--stone);border-radius:14px;padding:22px;box-shadow:0 30px 60px -30px rgba(23,26,25,.45);display:grid;gap:14px}
+.badge{justify-self:start;display:inline-grid;place-items:center;min-width:64px;height:64px;padding:0 12px;border-radius:14px;background:var(--tint);color:#fff;font-family:var(--f-display);font-size:1.6rem;line-height:1;transition:background .6s}
+.badge small{font-family:var(--f-body);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;margin-top:-6px}
+.card h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:1.5rem;line-height:1.1}
+.card p{margin:0;color:var(--ink-2);font-size:.95rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px;padding:0;margin:0;list-style:none}
+.tags li{font-size:.76rem;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--ink) 25%,transparent)}
+.tags li.sig{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.card .note{font-size:.8rem;color:var(--muted);border-top:1px solid var(--paper-2);padding-top:12px}
+.tabs-in{display:flex;gap:16px;font-size:.78rem;font-weight:600;color:var(--muted)}
+.tabs-in button{all:unset;cursor:pointer;padding-bottom:4px;border-bottom:2px solid transparent}
+.tabs-in button[aria-selected="true"]{color:var(--ink);border-color:var(--oak)}
+.tabs-in button:focus-visible{outline:2px solid var(--oak)}
+
+.tray{grid-area:tray;display:flex;align-items:center;gap:10px;min-width:0}
+.arrow{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:var(--stone);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px -8px rgba(0,0,0,.4)}
+.arrow:hover{background:var(--ink);color:var(--paper)}
+.arrow svg{width:18px;height:18px}
+.thumbs{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:8px 2px;min-width:0;flex:1;scroll-behavior:smooth}
+.thumbs::-webkit-scrollbar{display:none}
+.thumb{flex:none;width:96px;scroll-snap-align:center;border:0;background:transparent;border-radius:14px;padding:8px 6px;cursor:pointer;display:grid;gap:6px;justify-items:center;transition:background .25s}
+.thumb svg,.thumb img{width:62px;height:62px;filter:drop-shadow(0 5px 6px rgba(0,0,0,.18));transition:transform .35s}
+.thumb img{border-radius:50%;object-fit:cover;border:3px solid color-mix(in srgb,var(--on) 70%,transparent)}
+.thumb span{font-size:.72rem;line-height:1.2;text-align:center;font-weight:500;max-width:84px}
+.thumb:hover svg,.thumb:hover img{transform:rotate(-14deg) scale(1.05)}
+.thumb[aria-current="true"]{color:var(--ink);background:color-mix(in srgb,var(--stone) 88%,transparent);box-shadow:0 8px 20px -12px rgba(0,0,0,.35)}
+
+.dock{color:var(--ink);grid-area:dock;justify-self:center;display:flex;gap:4px;padding:6px;margin-bottom:34px;border-radius:999px;background:color-mix(in srgb,var(--stone) 88%,transparent);backdrop-filter:blur(8px);box-shadow:0 16px 36px -18px rgba(0,0,0,.45);max-width:100%;overflow-x:auto;scrollbar-width:none}
+.dock button{flex:none;display:flex;align-items:center;gap:8px;border:0;background:transparent;padding:10px 16px;border-radius:999px;cursor:pointer;font-weight:600;font-size:.86rem;white-space:nowrap}
+.dock button svg{width:18px;height:18px}
+.dock button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.dock button:not([aria-selected="true"]):hover{background:var(--paper-2)}
+
+/* list below */
+.list{background:var(--paper);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:64px 90px}
+.list .wrap{max-width:1320px;margin:0 auto}
+.list h2{font-family:var(--f-display);font-weight:400;font-size:clamp(1.8rem,3.4vw,2.6rem);margin:0}
+.list .sub{color:var(--muted);margin:8px 0 0}
+.rows{margin-top:28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:48px}
+.row{all:unset;cursor:pointer;display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--paper-2)}
+.row svg,.row img{width:48px;height:48px}
+.row img{border-radius:50%;object-fit:cover}
+.row b{font-weight:600}
+.row em{font-style:normal;color:var(--muted);font-size:.88rem;display:block}
+.row .go{font-size:.8rem;color:var(--oak);font-weight:600;opacity:0;transition:opacity .2s}
+.row:hover .go,.row:focus-visible .go{opacity:1}
+.row:focus-visible{outline:2px solid var(--oak);outline-offset:2px}
+.foot{background:var(--ink);color:var(--paper);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:36px}
+.foot .wrap{max-width:1320px;margin:0 auto;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:.9rem}
+.foot a{text-underline-offset:4px}
+
+@media (max-width:1020px){
+  .stage{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"dish name" "card card" "tray tray" "dock dock"}
+  .counter{display:none}
+  .card .inner{max-width:560px}
+}
+@media (max-width:640px){
+  .nav-left{gap:14px;font-size:.86rem}
+  .logo small{display:none}
+  .bar{grid-template-columns:auto 1fr auto;gap:12px}
+  .logo{justify-self:center;font-size:1.3rem}
+  .pill{padding:8px 13px;font-size:.8rem}
+  .stage{grid-template-columns:minmax(0,1fr);grid-template-areas:"name" "dish" "tray" "card" "dock";row-gap:14px}
+  .dish-wrap{max-width:340px}
+  .name{text-align:left}
+  .rows{grid-template-columns:minmax(0,1fr)}
+  .dock{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px));margin-bottom:24px;justify-self:stretch}
+  .dock button{padding:9px 12px;font-size:.8rem}
+  .room::after{height:90px}
+  .blob{width:130vw;left:-40vw;top:4%}
+  .lamp{display:none}
+}
+@media (prefers-reduced-motion:reduce){ .thumb svg,.blob,.badge{transition:none} }
+</style>
+</head>
+<body>
+<header class="site-head">
+  <div class="bar">
+    <nav class="nav-left" aria-label="Main">
+      <a href="index.html#menu-space">Space</a>
+      <a href="menu.html" aria-current="page">Menu</a>
+    </nav>
+    <a class="logo" href="index.html" aria-label="VichSpace home"><img src="img/logo.svg" alt="VichSpace Café and Co-Working"></a>
+    <a class="pill" href="https://line.me/ti/p/~@vichspace" target="_blank" rel="noopener">Book a Seat</a>
+  </div>
+</header>
+
+<main>
+<section class="room" aria-label="Menu viewer">
+  
+  
+  
+
+  <div class="stage" id="stage">
+    <div class="dish-wrap" id="dishWrap" aria-hidden="true"></div>
+
+    <div class="name" aria-live="polite">
+      <span class="cat" id="cat">Hot coffee</span>
+      <h1><span class="clip"><span class="l1" id="l1"></span></span><span class="clip"><span class="l2" id="l2"></span></span></h1>
+      <span class="count" id="count"></span>
+      <div class="actions">
+        <a class="btn" href="https://line.me/ti/p/~@vichspace" target="_blank" rel="noopener">Order on LINE</a>
+        <a class="btn ghost" href="#list">Full list</a>
+      </div>
+    </div>
+
+    <aside class="card" aria-label="Item details">
+      <div class="inner">
+        <div class="tabs-in" role="tablist">
+          <button role="tab" id="tabAbout" aria-selected="true">Overview</button>
+          <button role="tab" id="tabVisit" aria-selected="false">Where to get it</button>
+        </div>
+        <div id="paneAbout" role="tabpanel" aria-labelledby="tabAbout" style="display:grid;gap:14px">
+          <span class="badge" id="badge">01<small>of 15</small></span>
+          <h2 id="cName"></h2>
+          <p id="cDesc"></p>
+          <ul class="tags" id="cTags"></ul>
+        </div>
+        <div id="paneVisit" role="tabpanel" aria-labelledby="tabVisit" hidden style="display:grid;gap:10px">
+          <h2>At the counter</h2>
+          <p>Ground floor, 6/4 Hua Mak Road. Open every day 7:00–20:00. Take it upstairs to the co-working floor, it's free.</p>
+          <p>Prices are on the board at the counter.</p>
+        </div>
+        <span class="note">Use ← → keys or swipe the dish to browse.</span>
+      </div>
+    </aside>
+
+    <div class="tray">
+      <button class="arrow" id="prev" aria-label="Previous item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="thumbs" id="thumbs" role="listbox" aria-label="Items in this section"></div>
+      <button class="arrow" id="next" aria-label="Next item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+
+    <nav class="dock" id="dock" role="tablist" aria-label="Menu sections"></nav>
+  </div>
+</section>
+
+<section class="list" id="list">
+  <div class="wrap">
+    <h2 id="listTitle">Hot coffee</h2>
+    <p class="sub" id="listSub"></p>
+    <div class="rows" id="rows"></div>
+  </div>
+</section>
+</main>
+<footer class="foot"><div class="wrap"><span>VichSpace · 6/4 Hua Mak Road, Bangkok · Open daily 7:00–20:00</span><span><a href="index.html">Home</a> · <a href="https://www.instagram.com/vichspace/" target="_blank" rel="noopener">Instagram</a> · LINE <a href="https://line.me/ti/p/~@vichspace" target="_blank" rel="noopener">@vichspace</a></span></div></footer>
+
+<script>
+/* ---------- top-down illustrations (swap for photos later: set item.img) ---------- */
+let gid = 0;
+const C = 200;
+function rg(c1, c2){ const id='g'+(++gid); return [id, `<radialGradient id="${id}" cx="42%" cy="38%" r="70%"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient>`]; }
+function shade(hex, amt){ const n=parseInt(hex.slice(1),16); let r=n>>16,g=n>>8&255,b=n&255; const f=v=>Math.max(0,Math.min(255,Math.round(amt<0?v*(1+amt):v+(255-v)*amt))); return '#'+((1<<24)+(f(r)<<16)+(f(g)<<8)+f(b)).toString(16).slice(1); }
+function rand(seed){ let s=seed>>>0||1; return ()=>{ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
+function hash(str){ let h=2166136261; for(const ch of str){ h^=ch.charCodeAt(0); h=Math.imul(h,16777619);} return h>>>0; }
+
+function saucer(r=188){ const [id,d]=rg('#ffffff','#e9e6df'); return `<defs>${d}</defs><circle cx="${C}" cy="${C}" r="${r}" fill="url(#${id})"/><circle cx="${C}" cy="${C}" r="${r-34}" fill="none" stroke="#e3dfd6" stroke-width="2"/>`; }
+function plate(r=190){ const [id,d]=rg('#ffffff','#ece9e2'); return `<defs>${d}</defs><circle cx="${C}" cy="${C}" r="${r}" fill="url(#${id})"/><circle cx="${C}" cy="${C}" r="${r-40}" fill="#fbfaf7" stroke="#e6e2da" stroke-width="2"/>`; }
+function art(kind, liquid, accent, cx=C, cy=C, s=1){
+  const foam = accent || shade(liquid, .78);
+  switch(kind){
+    case 'heart': return `<path transform="translate(${cx} ${cy+6}) scale(${s})" d="M0 40 C-60 0,-52 -46,-18 -46 C-6 -46,0 -38,0 -30 C0 -38,6 -46,18 -46 C52 -46,60 0,0 40Z" fill="${foam}"/><path transform="translate(${cx} ${cy}) scale(${s})" d="M0 -30 L0 46" stroke="${foam}" stroke-width="5" stroke-linecap="round"/>`;
+    case 'rosetta': { let o=''; for(let i=0;i<6;i++){ const w=(62-i*8)*s; o+=`<ellipse cx="${cx}" cy="${cy-46*s+i*17*s}" rx="${w}" ry="${8*s}" fill="none" stroke="${foam}" stroke-width="${7*s}"/>`; } return o+`<path d="M${cx} ${cy-58*s} L${cx} ${cy+50*s}" stroke="${foam}" stroke-width="${4*s}"/>`; }
+    case 'crema': { const R=rand(hash(liquid)); let o=`<circle cx="${cx}" cy="${cy}" r="${78*s}" fill="none" stroke="${shade(liquid,.35)}" stroke-width="${10*s}" opacity=".55"/>`; for(let i=0;i<40;i++){ const a=R()*6.28, r=R()*86*s; o+=`<circle cx="${cx+Math.cos(a)*r}" cy="${cy+Math.sin(a)*r}" r="${1+R()*2.4}" fill="${shade(liquid,.5)}" opacity=".7"/>`;} return o; }
+    case 'foam': { const R=rand(hash(liquid+'f')); let o=`<circle cx="${cx}" cy="${cy}" r="${90*s}" fill="${foam}"/>`; for(let i=0;i<60;i++){ const a=R()*6.28, r=R()*70*s; o+=`<circle cx="${cx+Math.cos(a)*r}" cy="${cy+Math.sin(a)*r}" r="${1+R()*2}" fill="${shade(liquid,-.1)}" opacity=".55"/>`;} return o; }
+    case 'mousse': return `<circle cx="${cx}" cy="${cy}" r="${92*s}" fill="${foam}"/><path d="M${cx-60*s} ${cy} q30 -26 60 0 t60 0" fill="none" stroke="${shade(foam,-.18)}" stroke-width="${6*s}" stroke-linecap="round"/><path d="M${cx-46*s} ${cy+30*s} q23 -20 46 0 t46 0" fill="none" stroke="${shade(foam,-.18)}" stroke-width="${5*s}" stroke-linecap="round"/><circle cx="${cx+30*s}" cy="${cy-36*s}" r="${4*s}" fill="#fff" opacity=".9"/><circle cx="${cx-20*s}" cy="${cy-30*s}" r="${3*s}" fill="#fff" opacity=".9"/>`;
+    case 'drizzle': return art('foam', liquid, accent, cx, cy, s) + `<path d="M${cx-70*s} ${cy-40*s} L${cx+70*s} ${cy-40*s} M${cx-80*s} ${cy-10*s} L${cx+80*s} ${cy-10*s} M${cx-78*s} ${cy+20*s} L${cx+78*s} ${cy+20*s} M${cx-60*s} ${cy+50*s} L${cx+60*s} ${cy+50*s}" stroke="#b9772f" stroke-width="${5*s}" stroke-linecap="round" opacity=".85"/>`;
+    case 'tea': return `<circle cx="${cx-30*s}" cy="${cy-22*s}" r="${26*s}" fill="#fff" opacity=".18"/>`;
+    default: return '';
+  }
+}
+function citrus(x,y,r,col){ let o=`<circle cx="${x}" cy="${y}" r="${r}" fill="${shade(col,-.12)}"/><circle cx="${x}" cy="${y}" r="${r*.86}" fill="${shade(col,.55)}"/>`; for(let i=0;i<8;i++){ const a=i*Math.PI/4; o+=`<path d="M${x} ${y} L${x+Math.cos(a-.33)*r*.8} ${y+Math.sin(a-.33)*r*.8} A${r*.8} ${r*.8} 0 0 1 ${x+Math.cos(a+.33)*r*.8} ${y+Math.sin(a+.33)*r*.8}Z" fill="${col}"/>`; } return o; }
+function ice(R, n=5, r=118){ let o=''; for(let i=0;i<n;i++){ const a=R()*6.28, d=20+R()*(r-60), x=C+Math.cos(a)*d, y=C+Math.sin(a)*d, w=34+R()*14, rot=R()*90; o+=`<rect x="${x-w/2}" y="${y-w/2}" width="${w}" height="${w}" rx="9" transform="rotate(${rot} ${x} ${y})" fill="#fff" opacity=".42" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>`; } return o; }
+
+function drawCup(it){ const small = it.small; const cr = small?92:128, lr = small?76:110; const [lid,ld]=rg(shade(it.c,.15), shade(it.c,-.25));
+  return `<svg viewBox="0 0 400 400">${saucer(small?150:188)}<defs>${ld}</defs>
+  <rect x="${C+cr-10}" y="${C-17}" width="${small?62:78}" height="34" rx="17" fill="#f4f2ec" stroke="#e1ddd4" stroke-width="2"/>
+  <circle cx="${C}" cy="${C}" r="${cr}" fill="#fbfaf7" stroke="#e5e1d8" stroke-width="3"/>
+  <circle cx="${C}" cy="${C}" r="${lr}" fill="url(#${lid})"/>${art(it.art, it.c, it.a, C, C, small?.62:1)}
+  ${it.zest?zest(it.zest):''}${it.nuts?nuts():''}
+  <ellipse cx="${C-cr*.45}" cy="${C-cr*.55}" rx="${cr*.28}" ry="${cr*.1}" transform="rotate(-38 ${C-cr*.45} ${C-cr*.55})" fill="#fff" opacity=".35"/></svg>`; }
+function zest(col){ const R=rand(7); let o=''; for(let i=0;i<14;i++){ const a=R()*6.28,d=R()*70; o+=`<rect x="${C+Math.cos(a)*d}" y="${C+Math.sin(a)*d}" width="10" height="3" rx="1.5" transform="rotate(${R()*180} ${C+Math.cos(a)*d} ${C+Math.sin(a)*d})" fill="${col}"/>`;} return o; }
+function nuts(){ const R=rand(11); let o=''; for(let i=0;i<16;i++){ const a=R()*6.28,d=R()*66; o+=`<circle cx="${C+Math.cos(a)*d}" cy="${C+Math.sin(a)*d}" r="${2+R()*3}" fill="#8a5a2b"/>`;} return o; }
+
+function drawGlass(it){ const R=rand(hash(it.n)); const [lid,ld]=rg(shade(it.c,.25), shade(it.c,-.15));
+  let body = `<circle cx="${C}" cy="${C}" r="168" fill="#eef3f6" opacity=".6"/><circle cx="${C}" cy="${C}" r="160" fill="#ffffff" opacity=".35" stroke="#ffffff" stroke-width="5"/>`;
+  let liquid = `<circle cx="${C}" cy="${C}" r="146" fill="url(#${lid})"/>`;
+  if (it.milk) liquid += `<path d="M${C-146} ${C} A146 146 0 0 0 ${C+146} ${C} Q${C+60} ${C-40} ${C} ${C+8} T${C-146} ${C}Z" fill="${it.milk}" opacity=".85"/>`;
+  if (it.swirl) liquid += `<path d="M${C} ${C} m-6 0 a6 6 0 1 1 12 0 a18 18 0 1 1 -36 0 a34 34 0 1 1 68 0 a52 52 0 1 1 -104 0" fill="none" stroke="${it.swirl}" stroke-width="12" stroke-linecap="round" opacity=".9"/>`;
+  let top = '';
+  if (it.foamTop) top += `<circle cx="${C}" cy="${C}" r="128" fill="${it.foamTop}"/>` + art('crema', it.foamTop, null, C, C, 1.3);
+  if (it.scoop) top += `<circle cx="${C+8}" cy="${C-6}" r="70" fill="#f6efe0"/><circle cx="${C-14}" cy="${C-24}" r="22" fill="#fff" opacity=".6"/>`;
+  if (it.ice !== false && !it.foamTop) top += ice(R, it.scoop?3:5);
+  if (it.drizzle) top += `<path d="M${C-90} ${C-60} q40 30 90 0 t90 10 M${C-100} ${C+20} q50 -30 100 0 t90 -6" fill="none" stroke="#b9772f" stroke-width="7" stroke-linecap="round" opacity=".9"/>`;
+  if (it.slice) top += citrus(C+70, C-62, 44, it.slice);
+  if (it.straw !== false) top += `<circle cx="${C-56}" cy="${C+58}" r="15" fill="${it.strawC||'#1f2422'}"/><circle cx="${C-56}" cy="${C+58}" r="8" fill="${shade(it.c,-.35)}"/>`;
+  return `<svg viewBox="0 0 400 400"><defs>${ld}</defs>${body}${liquid}${top}<ellipse cx="${C-80}" cy="${C-96}" rx="46" ry="12" transform="rotate(-40 ${C-80} ${C-96})" fill="#fff" opacity=".45"/></svg>`; }
+
+function drawFrappe(it){ const [lid,ld]=rg(shade(it.c,.2), shade(it.c,-.2)); let o=`<svg viewBox="0 0 400 400"><defs>${ld}</defs><circle cx="${C}" cy="${C}" r="168" fill="#eef3f6" opacity=".6"/><circle cx="${C}" cy="${C}" r="160" fill="#fff" opacity=".35" stroke="#fff" stroke-width="5"/><circle cx="${C}" cy="${C}" r="146" fill="url(#${lid})"/>`;
+  for(let i=5;i>=0;i--) o+=`<circle cx="${C+i*3}" cy="${C-i*3}" r="${40+i*15}" fill="${i%2?'#fbf7f0':'#f3ece0'}"/>`;
+  o+=`<path d="M${C} ${C} m-4 0 a4 4 0 1 1 8 0 a16 16 0 1 1 -32 0 a30 30 0 1 1 60 0 a46 46 0 1 1 -92 0 a62 62 0 1 1 124 0" fill="none" stroke="#e7dccb" stroke-width="5"/>`;
+  if (it.top) o+=`<path d="M${C-80} ${C-30} q20 20 40 0 t40 0 t40 0 t40 0" fill="none" stroke="${it.top}" stroke-width="7" stroke-linecap="round"/><path d="M${C-70} ${C+30} q20 -20 40 0 t40 0 t40 0" fill="none" stroke="${it.top}" stroke-width="7" stroke-linecap="round"/>`;
+  if (it.bits) { const R=rand(hash(it.n)); for(let i=0;i<9;i++){ const a=R()*6.28,d=R()*80; o+=`<circle cx="${C+Math.cos(a)*d}" cy="${C+Math.sin(a)*d}" r="${7+R()*5}" fill="${it.bits}" stroke="${shade(it.bits,-.2)}" stroke-width="2"/>`; } }
+  o+=`<circle cx="${C+70}" cy="${C+70}" r="15" fill="#1f2422"/><circle cx="${C+70}" cy="${C+70}" r="8" fill="${shade(it.c,-.35)}"/></svg>`; return o; }
+
+function drawSoda(it){ const R=rand(hash(it.n)); let o=`<svg viewBox="0 0 400 400"><circle cx="${C}" cy="${C}" r="168" fill="#eef3f6" opacity=".6"/><circle cx="${C}" cy="${C}" r="160" fill="#fff" opacity=".35" stroke="#fff" stroke-width="5"/><circle cx="${C}" cy="${C}" r="146" fill="${it.c}" opacity=".75"/>`;
+  for(let i=0;i<34;i++){ const a=R()*6.28,d=R()*136; o+=`<circle cx="${C+Math.cos(a)*d}" cy="${C+Math.sin(a)*d}" r="${2+R()*5}" fill="none" stroke="#fff" stroke-width="1.6" opacity=".8"/>`;}
+  o+=ice(R,4); if(it.slice) o+=citrus(C+58,C-58,46,it.slice); if(it.berry) o+=`<path d="M${C+50} ${C-90} q40 0 30 45 q-12 34 -34 34 q-22 0 -32 -34 q-8 -45 36 -45z" fill="#d6455a"/><path d="M${C+36} ${C-96} l14 10 l14 -10" stroke="#5c8a3a" stroke-width="6" fill="none"/>`;
+  if(it.flower) for(let i=0;i<5;i++){ const a=i*1.256; o+=`<circle cx="${C+60+Math.cos(a)*12}" cy="${C-60+Math.sin(a)*12}" r="9" fill="#fff"/>`; }
+  o+=`<circle cx="${C-56}" cy="${C+58}" r="15" fill="#1f2422"/><circle cx="${C-56}" cy="${C+58}" r="8" fill="${shade(it.c,-.3)}"/></svg>`; return o; }
+
+/* food & dessert components */
+const P = {
+  bread:(x,y,r,rot)=>`<g transform="rotate(${rot} ${x} ${y})"><path d="M${x-r} ${y+r*.7} L${x} ${y-r} L${x+r} ${y+r*.7}Z" fill="#d9a85f" stroke="#b07a35" stroke-width="7" stroke-linejoin="round"/><path d="M${x-r*.62} ${y+r*.5} L${x} ${y-r*.55} L${x+r*.62} ${y+r*.5}Z" fill="#f2dcae"/></g>`,
+  croissant:(x,y,s,rot)=>{ let o=`<g transform="rotate(${rot} ${x} ${y}) scale(1)">`; const segs=[[-70,20,30],[-38,-6,38],[0,-16,44],[38,-6,38],[70,20,30]]; for(const [dx,dy,r] of segs) o+=`<ellipse cx="${x+dx*s}" cy="${y+dy*s}" rx="${r*s}" ry="${r*.8*s}" fill="#c98632" stroke="#9c5f1c" stroke-width="3"/><ellipse cx="${x+dx*s-r*.2*s}" cy="${y+dy*s-r*.25*s}" rx="${r*.45*s}" ry="${r*.22*s}" fill="#e9b064" opacity=".8"/>`; return o+'</g>'; },
+  leaves:(R,n,cx,cy,rad,cols=['#6f9a3e','#8db554','#4f7a2c','#a9c66b'])=>{ let o=''; for(let i=0;i<n;i++){ const a=R()*6.28,d=R()*rad,x=cx+Math.cos(a)*d,y=cy+Math.sin(a)*d; o+=`<ellipse cx="${x}" cy="${y}" rx="${16+R()*14}" ry="${8+R()*6}" transform="rotate(${R()*180} ${x} ${y})" fill="${cols[i%cols.length]}"/>`; } return o; },
+  chunks:(R,n,cx,cy,rad,col,sz=12)=>{ let o=''; for(let i=0;i<n;i++){ const a=R()*6.28,d=R()*rad,x=cx+Math.cos(a)*d,y=cy+Math.sin(a)*d,w=sz+R()*sz*.8; o+=`<rect x="${x-w/2}" y="${y-w/2}" width="${w}" height="${w*.8}" rx="${w*.3}" transform="rotate(${R()*90} ${x} ${y})" fill="${col}" stroke="${shade(col,-.2)}" stroke-width="2"/>`; } return o; },
+  rice:(R,cx,cy,r)=>{ let o=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#fbfaf4" stroke="#ece6d6" stroke-width="3"/>`; for(let i=0;i<70;i++){ const a=R()*6.28,d=R()*(r-6),x=cx+Math.cos(a)*d,y=cy+Math.sin(a)*d; o+=`<ellipse cx="${x}" cy="${y}" rx="4.5" ry="2" transform="rotate(${R()*180} ${x} ${y})" fill="#e9e3d2"/>`; } return o; },
+  wedge:(x,y,r,top,side,crust)=>`<path d="M${x} ${y+r*.9} L${x-r*.95} ${y-r*.55} A${r*1.1} ${r*1.1} 0 0 1 ${x+r*.95} ${y-r*.55}Z" fill="${side}" stroke="${crust}" stroke-width="10" stroke-linejoin="round"/><path d="M${x} ${y+r*.62} L${x-r*.72} ${y-r*.42} A${r*.86} ${r*.86} 0 0 1 ${x+r*.72} ${y-r*.42}Z" fill="${top}"/>`,
+};
+function drawPlate(it){ const R=rand(hash(it.n)); let o=`<svg viewBox="0 0 400 400">${plate()}`; const k=it.k;
+  if (k==='sandwich'){ const half=(pts,fill)=>`<polygon points="${pts}" fill="#c98a42" stroke="#a46a26" stroke-width="4" stroke-linejoin="round"/>`;
+    o+=`<g transform="rotate(-12 200 200)">`+half('104,112 104,292 284,292')+`<polygon points="120,140 120,276 256,276" fill="#f3e2bd"/><path d="M110 118 L278 286" stroke="${it.c}" stroke-width="12" stroke-linecap="round"/><path d="M110 132 L264 286" stroke="#f6d36b" stroke-width="6" stroke-linecap="round"/>`
+      +`<g transform="translate(26 -26)">`+half('120,104 300,104 300,284')+`<polygon points="146,120 284,120 284,258" fill="#f3e2bd"/><path d="M126 110 L294 278" stroke="${it.c}" stroke-width="12" stroke-linecap="round"/><path d="M140 110 L294 264" stroke="#7fae4a" stroke-width="6" stroke-linecap="round"/></g></g>`; }
+  else if (k==='croissant'){ o+=P.croissant(200,210,1.15,-10)+(it.c?`<path d="M120 236 q80 30 160 0" stroke="${it.c}" stroke-width="12" fill="none" stroke-linecap="round" opacity=".9"/>`:'')+(it.leaf?P.leaves(R,6,200,250,24):''); }
+  else if (k==='salad'){ o+=P.leaves(R,46,200,200,108)+P.chunks(R,9,200,200,80,it.c||'#e8c48a',16)+(it.orange?Array.from({length:6},(_,i)=>{const a=i*1.05,x=200+Math.cos(a)*70,y=200+Math.sin(a)*70;return `<path d="M${x-16} ${y} q16 -22 32 0 q-16 12 -32 0z" fill="#f08a2c" transform="rotate(${i*60} ${x} ${y})"/>`;}).join(''):'')+P.chunks(R,6,200,200,90,'#d9b06a',8); }
+  else if (k==='rice'){ o+=P.rice(R,150,215,78); if(it.stew){ o+=`<circle cx="262" cy="182" r="80" fill="${it.c}" stroke="${shade(it.c,-.2)}" stroke-width="3"/>`+P.chunks(R,8,262,182,52,'#e7c08a',16)+P.chunks(R,6,262,182,52,'#e8742f',10)+P.leaves(R,4,262,182,40,['#5f8f39']); } else { for(let i=0;i<5;i++){ const x=230+i*14,y=150+i*26; o+=`<rect x="${x-34}" y="${y-14}" width="78" height="30" rx="12" transform="rotate(-22 ${x} ${y})" fill="#9a5a2c" stroke="#6e3d1a" stroke-width="3"/>`; } o+=P.chunks(R,14,270,210,60,'#f2e3b8',6)+P.leaves(R,4,300,280,20); } }
+  else if (k==='toast'){ for(let i=0;i<2;i++){ const x=150+i*96,y=200+(i?-14:14); o+=`<rect x="${x-46}" y="${y-62}" width="92" height="124" rx="14" transform="rotate(${i?12:-8} ${x} ${y})" fill="#d49b55" stroke="#a36a2a" stroke-width="5"/><rect x="${x-34}" y="${y-50}" width="68" height="100" rx="10" transform="rotate(${i?12:-8} ${x} ${y})" fill="#b98466"/>`; } o+=P.leaves(R,4,200,300,22); }
+  else if (k==='cheesecake'){ o+=P.wedge(200,200,120,it.c,'#f6ead2','#c78f4c'); if(it.brulee) o+=`<path d="M200 300 L104 135 A132 132 0 0 1 296 135Z" fill="#c07a2e" opacity=".55"/>`; if(it.cocoa){ for(let i=0;i<80;i++){ const a=R()*6.28,d=R()*80; o+=`<circle cx="${200+Math.cos(a)*d}" cy="${170+Math.sin(a)*d*.6}" r="${1+R()*1.8}" fill="#4a2a17" opacity=".7"/>`; } } }
+  else if (k==='brownie'){ o+=`<rect x="122" y="128" width="156" height="144" rx="16" fill="#4a2b1b" stroke="#2f1a10" stroke-width="5" transform="rotate(-6 200 200)"/><path d="M140 160 l20 6 M210 150 l26 10 M160 230 l30 -4 M228 214 l24 8" stroke="#6b4129" stroke-width="7" stroke-linecap="round"/>`; }
+  else if (k==='cookie'){ o+=`<circle cx="200" cy="200" r="104" fill="#c98d48" stroke="#9a6328" stroke-width="5"/><circle cx="196" cy="196" r="58" fill="#e2b46e" opacity=".8"/>`+P.chunks(R,11,200,200,84,'#3a2216',14); }
+  else if (k==='scone'){ for(let i=0;i<9;i++){ const a=i*.7,x=200+Math.cos(a)*36,y=200+Math.sin(a)*36; o+=`<circle cx="${x}" cy="${y}" r="58" fill="#d8a457"/>`; } o+=`<circle cx="200" cy="200" r="70" fill="#e6b867"/><circle cx="290" cy="290" r="26" fill="#f7f1e4" stroke="#e6dcc6" stroke-width="3"/><circle cx="110" cy="290" r="22" fill="#c43c4c"/>`; }
+  else if (k==='pancake'){ for(let i=2;i>=0;i--) o+=`<circle cx="${200-i*6}" cy="${200+i*8}" r="${106}" fill="${i?'#c88a42':'#e0a95a'}" stroke="#a36a2a" stroke-width="3"/>`; o+=`<path d="M150 150 q50 40 30 90 q30 -20 70 6" fill="none" stroke="#8a4b16" stroke-width="12" stroke-linecap="round" opacity=".75"/><rect x="186" y="186" width="30" height="24" rx="5" fill="#fff3c4"/>`; }
+  else if (k==='waffle'){ o+=`<circle cx="200" cy="200" r="112" fill="#d79c4e" stroke="#a46a26" stroke-width="5"/>`; for(let i=-4;i<=4;i++){ o+=`<path d="M${200+i*24} 96 L${200+i*24} 304 M96 ${200+i*24} L304 ${200+i*24}" stroke="#b47732" stroke-width="7" clip-path="circle(100px at 200px 200px)"/>`; } const b=['#2b2a5a','#c4314a','#3a2a6a','#d6455a','#8b1f3a']; for(let i=0;i<12;i++){ const a=R()*6.28,d=R()*80; o+=`<circle cx="${200+Math.cos(a)*d}" cy="${200+Math.sin(a)*d}" r="${9+R()*5}" fill="${b[i%b.length]}"/>`; } }
+  else if (k==='icecream'){ const cols=['#f6efdd','#9cbf6a','#4a2b1b','#f2d24d']; cols.forEach((c,i)=>{ const a=i*1.5708+.5,x=200+Math.cos(a)*62,y=200+Math.sin(a)*62; o+=`<circle cx="${x}" cy="${y}" r="56" fill="${c}"/><circle cx="${x-16}" cy="${y-18}" r="14" fill="#fff" opacity=".35"/>`; }); }
+  return o+'</svg>'; }
+
+/* ---------- menu data (from vichspace.co) ---------- */
+const MENU = [
+ { id:'hot', label:'Hot', title:'Hot coffee & tea', tint:'#c49a6c', icon:'<path d="M5 10h11v4a5 5 0 01-5 5h-1a5 5 0 01-5-5z"/><path d="M16 11h2a2 2 0 010 4h-2M8 3c0 2 2 2 2 4M12 3c0 2 2 2 2 4"/>', draw:drawCup, items:[
+  {n:'Vich Black', d:'Caramel coffee topped with salted caramel mousse. Our house signature.', c:'#3b2416', art:'mousse', a:'#d6a46a', tags:['Signature','Hot'], sig:1},
+  {n:'Vich White', d:'Milk coffee finished with a soft mousse top. The lighter of our two signatures.', c:'#b88d64', art:'mousse', a:'#f1e6d4', tags:['Signature','Hot'], sig:1},
+  {n:'Espresso', d:'A short, strong shot.', c:'#2a1810', art:'crema', small:1, tags:['Hot']},
+  {n:'Americano', d:'Espresso lengthened with hot water.', c:'#2f1c12', art:'crema', tags:['Hot','Iced too']},
+  {n:'Latte', d:'Espresso with steamed milk.', c:'#c49a6c', art:'rosetta', tags:['Hot','Iced too']},
+  {n:'Piccolo', d:'A small coffee with a little warm milk.', c:'#a97a52', art:'heart', small:1, tags:['Hot']},
+  {n:'Cappuccino', d:'Espresso, steamed milk and a thick foam cap.', c:'#b88a5e', art:'foam', tags:['Hot','Iced too']},
+  {n:'Caramel Macchiato', d:'Milk and espresso with a caramel finish.', c:'#d1a777', art:'drizzle', tags:['Hot','Iced too']},
+  {n:'Orange Latte', d:'A latte brightened with orange.', c:'#c99263', art:'heart', zest:'#e8781c', tags:['Hot']},
+  {n:'Crunchy Nut Latte', d:'A latte with a nutty, crunchy finish.', c:'#b98a5c', art:'foam', nuts:1, tags:['Hot']},
+  {n:'Mocha', d:'Espresso, chocolate and steamed milk.', c:'#6b4228', art:'heart', tags:['Hot','Iced too']},
+  {n:'Matcha Latte', d:'Matcha with steamed milk.', c:'#8fae5c', art:'rosetta', tags:['Hot']},
+  {n:'Hot Chocolate', d:'Chocolate and steamed milk.', c:'#5a3420', art:'foam', a:'#a77a5a', tags:['Hot']},
+  {n:'Horlicks', d:'The malted milk drink, served hot.', c:'#c9a57e', art:'foam', tags:['Hot','Iced too']},
+  {n:'Hot Tea', d:'Earl Grey or Four Red Fruits.', c:'#9b4a2c', art:'tea', tags:['Hot']},
+ ]},
+ { id:'iced', label:'Iced', title:'Iced drinks', tint:'#7fa6c2', icon:'<path d="M6 4h12l-1.5 16h-9z"/><path d="M8 9h8M10 13l2 2 2-2"/>', draw:drawGlass, items:[
+  {n:'Es Yen', d:'Thai-style iced coffee, sweet and milky.', c:'#8a5a36', milk:'#e8d7bd', tags:['Iced']},
+  {n:'Iced Americano', d:'Espresso and cold water over ice.', c:'#2f1c12', tags:['Iced']},
+  {n:'Iced Latte', d:'Espresso and cold milk over ice.', c:'#7a4c2c', milk:'#efe4d2', tags:['Iced']},
+  {n:'Iced Cappuccino', d:'Iced espresso and milk under a foam cap.', c:'#a77b52', foamTop:'#efe2cd', tags:['Iced']},
+  {n:'Iced Caramel Macchiato', d:'Milk, espresso and caramel over ice.', c:'#c79a68', milk:'#f1e6d2', drizzle:1, tags:['Iced']},
+  {n:'Iced Mocha', d:'Espresso, chocolate and milk over ice.', c:'#5d3a24', milk:'#d9c1a7', tags:['Iced']},
+  {n:'Yuzu Americano', d:'Espresso and yuzu over ice.', c:'#3a2414', slice:'#f0c93a', tags:['Iced','Citrus']},
+  {n:'Orange Americano', d:'Espresso and orange over ice.', c:'#3a2414', slice:'#f08a2c', tags:['Iced','Citrus']},
+  {n:'Shakerato', d:'Espresso shaken with ice until it foams.', c:'#6b4128', foamTop:'#c79a6c', straw:false, tags:['Iced']},
+  {n:'Dirty Coffee', d:'Cold milk with a shot of espresso poured over the top.', c:'#f1e8da', swirl:'#5a351e', ice:false, straw:false, tags:['Iced']},
+  {n:'Affogato', d:'Ice cream with a shot of espresso poured over.', c:'#3a2414', scoop:1, ice:false, straw:false, tags:['Coffee','Dessert']},
+  {n:'Iced Chocolate', d:'Chocolate and milk over ice.', c:'#5a3420', milk:'#cfb196', tags:['Iced']},
+  {n:'Iced Horlicks', d:'The malted milk drink over ice.', c:'#c9a57e', tags:['Iced']},
+  {n:'Iced Black Tea', d:'Black tea over ice.', c:'#7a3218', tags:['Iced','Tea']},
+  {n:'Lemon Tea', d:'Iced tea with lemon.', c:'#b5651e', slice:'#f2d43c', tags:['Iced','Tea']},
+  {n:'Milk Tea', d:'Iced milk tea.', c:'#d08a4e', milk:'#f0dcc2', tags:['Iced','Tea']},
+  {n:'Iced Matcha', d:'Matcha and cold milk over ice.', c:'#6f9440', milk:'#eef0de', tags:['Iced']},
+  {n:'Yuzu Matcha', d:'Matcha over yuzu and ice.', c:'#6f9440', slice:'#f0c93a', tags:['Iced','Citrus']},
+ ]},
+ { id:'blended', label:'Frappé & Soda', title:'Frappés & sodas', tint:'#e3a7b3', icon:'<path d="M7 8h10l-1.5 12h-7z"/><path d="M6 8a6 4 0 0112 0M14 2l-2 6"/>', draw:null, items:[
+  {n:'Coffee Frappé', d:'Coffee blended with ice.', c:'#a07850', kind:'frappe', tags:['Blended']},
+  {n:'Caramel Coffee Frappé', d:'Coffee and caramel blended with ice.', c:'#b8875a', top:'#b9772f', kind:'frappe', tags:['Blended']},
+  {n:'Mocha Frappé', d:'Coffee and chocolate blended with ice.', c:'#6b4228', top:'#3a2216', kind:'frappe', tags:['Blended']},
+  {n:'Chocolate Frappé', d:'Chocolate blended with ice.', c:'#5a3420', top:'#2e1a10', kind:'frappe', tags:['Blended','No coffee']},
+  {n:'Matcha Frappé', d:'Matcha blended with ice.', c:'#8fae5c', kind:'frappe', tags:['Blended','No coffee']},
+  {n:'Horlicks Frappé', d:'Malted milk blended with ice.', c:'#cfae86', kind:'frappe', tags:['Blended','No coffee']},
+  {n:'Yuzu Frappé', d:'Yuzu blended with ice.', c:'#e8c64a', kind:'frappe', tags:['Blended','Citrus']},
+  {n:'Banoffee Frappé', d:'Banana and toffee blended with ice.', c:'#d9b46a', top:'#a8662a', bits:'#f6e7a8', kind:'frappe', tags:['Blended']},
+  {n:'Strawberry Frappé', d:'Strawberry blended with ice.', c:'#e07a8a', top:'#c4314a', kind:'frappe', tags:['Blended','No coffee']},
+  {n:'Yuzu Soda', d:'Yuzu and soda over ice.', c:'#f0d860', slice:'#f0c93a', kind:'soda', tags:['Soda']},
+  {n:'Lime Soda', d:'Lime and soda over ice.', c:'#b8d86a', slice:'#7fb33a', kind:'soda', tags:['Soda']},
+  {n:'Honey Lemon Soda', d:'Honey, lemon and soda over ice.', c:'#e8c060', slice:'#f2d43c', kind:'soda', tags:['Soda']},
+  {n:'Strawberry Soda', d:'Strawberry and soda over ice.', c:'#e88a98', berry:1, kind:'soda', tags:['Soda']},
+  {n:'Elderflower Soda', d:'Elderflower and soda over ice.', c:'#e3ebc8', flower:1, kind:'soda', tags:['Soda']},
+ ]},
+ { id:'food', label:'Food', title:'Food', tint:'#9fb878', icon:'<path d="M7 3v8a2 2 0 002 2v8M11 3v8M7 7h4M17 3c-2 2-2 6 0 8v10"/>', draw:drawPlate, items:[
+  {n:'Ham & Cheese Sandwich', d:'Ham and cheese between soft bread.', k:'sandwich', c:'#e4a3a0', tags:['Sandwich']},
+  {n:'Creamy Tuna Sandwich', d:'Creamy tuna between soft bread.', k:'sandwich', c:'#e9d9b0', tags:['Sandwich']},
+  {n:'Ham & Cheese Croissant', d:'A buttery croissant with ham and cheese.', k:'croissant', c:'#e4a3a0', tags:['Croissant']},
+  {n:'Chicken Caesar Croissant', d:'Croissant filled with chicken Caesar.', k:'croissant', c:'#f1e2b4', leaf:1, tags:['Croissant']},
+  {n:'Chicken Caesar Salad', d:'Greens, chicken and Caesar dressing.', k:'salad', c:'#e8c48a', tags:['Salad']},
+  {n:'Baked Chicken Salad', d:'Greens with baked chicken.', k:'salad', c:'#c98a4c', tags:['Salad']},
+  {n:'Tuna Salad with Fresh Orange', d:'Tuna, greens and fresh orange.', k:'salad', c:'#efe2c4', orange:1, tags:['Salad']},
+  {n:'Garlic Pepper Pork', d:'Pork marinated in garlic and pepper, served with rice.', k:'rice', tags:['With rice']},
+  {n:'Chicken Stew', d:'Chicken stew served with rice.', k:'rice', stew:1, c:'#c9874a', tags:['With rice']},
+  {n:'Chicken Liver Pâté Toast', d:'Toasted bread with chicken liver pâté.', k:'toast', tags:['Toast']},
+ ]},
+ { id:'desserts', label:'Desserts', title:'Desserts', tint:'#e2b25e', icon:'<path d="M4 14h16l-2 6H6z"/><path d="M6 14c0-4 3-7 6-7s6 3 6 7M12 3v4"/>', draw:drawPlate, items:[
+  {n:'Hokkaido Crème Brûlée Cheesecake', d:'Hokkaido cheesecake with a crème brûlée top.', k:'cheesecake', c:'#f2dfb4', brulee:1, tags:['Cake']},
+  {n:'Hokkaido Tiramisu Cheesecake', d:'Hokkaido cheesecake finished like tiramisu.', k:'cheesecake', c:'#c8a481', cocoa:1, tags:['Cake']},
+  {n:'Brownie', d:'Dense chocolate brownie.', k:'brownie', tags:['Bake']},
+  {n:'Half-baked Cookie', d:'A cookie baked soft in the middle.', k:'cookie', tags:['Bake']},
+  {n:'Butter Croissant', d:'A plain butter croissant.', k:'croissant', tags:['Pastry']},
+  {n:'Cinnamon Roll', d:'A soft roll swirled with cinnamon.', k:'croissant', c:'#8a4b1e', tags:['Pastry']},
+  {n:'Scone', d:'One scone, served by the piece.', k:'scone', tags:['Bake']},
+  {n:'Pancakes', d:'A stack of pancakes.', k:'pancake', tags:['Plate']},
+  {n:'Mixed Berry Waffle', d:'Waffle with mixed berries and vanilla ice cream.', k:'waffle', tags:['Plate']},
+  {n:'Ice Cream', d:'Vanilla, matcha, dark chocolate or yuzu.', k:'icecream', tags:['4 flavours']},
+ ]},
+];
+const PHOTOS = {"Vich Black": ["vich-black", "#224b74", "#0f3e66"], "Vich White": ["vich-white", "#1f5787", "#295d8c"], "Espresso": ["espresso", "#b9794e", "#b77951"], "Americano": ["americano", "#ad724e", "#ab7552"], "Latte": ["latte", "#b9784d", "#b2724d"], "Piccolo": ["piccolo", "#b9784e", "#b67851"], "Cappuccino": ["cappuccino", "#b87b54", "#b5774f"], "Caramel Macchiato": ["caramel-macchiato", "#b7754b", "#b1734d"], "Orange Latte": ["orange-latte", "#c88a5d", "#c58c64"], "Crunchy Nut Latte": ["crunchy-nut-latte", "#c98b5f", "#c78f68"], "Mocha": ["mocha", "#ce9263", "#cc9266"], "Matcha Latte": ["matcha-latte", "#b98059", "#b7845f"], "Hot Chocolate": ["hot-chocolate", "#ba7e58", "#ba7e56"], "Horlicks": ["horlicks", "#b4744b", "#bc845c"], "Hot Tea": ["hot-tea", "#b8784e", "#b1734c"], "Es Yen": ["es-yen", "#284e76", "#1a446b"], "Iced Americano": ["iced-americano", "#224a74", "#0f3d67"], "Iced Latte": ["iced-latte", "#f4af50", "#eca545"], "Iced Cappuccino": ["iced-cappuccino", "#274c72", "#174065"], "Iced Caramel Macchiato": ["iced-caramel-macchiato", "#163858", "#0b2f4f"], "Iced Mocha": ["iced-mocha", "#17426a", "#0c385d"], "Yuzu Americano": ["iced-yuzu-americano", "#0b3356", "#133f64"], "Orange Americano": ["iced-orange-americano", "#153b5f", "#1a3d61"], "Shakerato": ["shakerato", "#294f77", "#19446b"], "Dirty Coffee": ["dirty-coffee", "#1a466d", "#0c3c62"], "Affogato": ["affogato", "#0a3559", "#0a3357"], "Iced Chocolate": ["iced-chocolate", "#18436b", "#0d3a60"], "Iced Horlicks": ["iced-horlicks", "#214a71", "#184268"], "Lemon Tea": ["iced-lemon-tea", "#1f4a73", "#103e65"], "Milk Tea": ["milk-tea", "#204971", "#0f3d64"], "Iced Matcha": ["iced-matcha", "#012655", "#2b4771"], "Yuzu Matcha": ["iced-yuzu-matcha", "#0c2f4f", "#113758"], "Coffee Frappé": ["coffee-frappe", "#f16249", "#e76450"], "Caramel Coffee Frappé": ["caramel-frappe", "#264c73", "#184168"], "Mocha Frappé": ["mocha-frappe", "#ee6b56", "#e46455"], "Chocolate Frappé": ["chocolate-frappe", "#ed6c55", "#e26453"], "Matcha Frappé": ["matcha-frappe", "#df5a47", "#d35d4c"], "Horlicks Frappé": ["horlicks-frappe", "#fb7159", "#f26855"], "Yuzu Frappé": ["yuzu-frappe", "#f3644b", "#e76551"], "Banoffee Frappé": ["banoffee-frappe", "#e1614a", "#d96452"], "Strawberry Frappé": ["strawberry-frappe", "#f16249", "#d95949"], "Yuzu Soda": ["yuzu-soda", "#99bed3", "#99bdd1"], "Lime Soda": ["lime-soda", "#98bcd2", "#9abfd2"], "Honey Lemon Soda": ["honey-lemon-soda", "#89afc4", "#8cb0c2"], "Strawberry Soda": ["strawberry-soda", "#95bacf", "#97bacf"], "Elderflower Soda": ["elderflower-soda", "#8fb5cc", "#91b6ca"], "Ham & Cheese Sandwich": ["ham-cheese-sandwich", "#a99d99", "#aea39f"], "Creamy Tuna Sandwich": ["creamy-tuna-sandwich", "#b2a6a4", "#b2a7a5"], "Ham & Cheese Croissant": ["ham-cheese-croissant", "#b1a6a4", "#aea3a0"], "Chicken Caesar Croissant": ["chicken-caesar-croissant", "#b6a89e", "#aa9c92"], "Chicken Caesar Salad": ["healthy-chicken-caesar-salad", "#b1a79e", "#aaa098"], "Baked Chicken Salad": ["baked-chicken-salad", "#764720", "#72441e"], "Tuna Salad with Fresh Orange": ["tuna-salad", "#bcafa5", "#b8aca4"], "Garlic Pepper Pork": ["thai-garlic-pepper-pork", "#c1b3a7", "#baaea3"], "Chicken Stew": ["chicken-stew", "#beafa3", "#b2a399"], "Chicken Liver Pâté Toast": ["liver-bread", "#7b4b25", "#75461e"], "Hokkaido Crème Brûlée Cheesecake": ["hokkaido-creme-brulee-cheesecake", "#663a14", "#7c4b20"], "Brownie": ["chocolate-brownies", "#835d3c", "#91643c"], "Half-baked Cookie": ["half-baked-cookies", "#955b2c", "#8b572b"], "Butter Croissant": ["butter-croissant", "#8f6642", "#8e633c"], "Cinnamon Roll": ["cinnamon-roll", "#865e3d", "#8e633b"], "Scone": ["scone", "#946c47", "#8d623c"], "Pancakes": ["pancakes", "#895425", "#7f4e24"], "Mixed Berry Waffle": ["waffles-vanilla-ice-cream", "#7b502c", "#734a29"], "Ice Cream": ["ice-cream", "#7d5737", "#92653d"]};
+MENU.forEach(sec => sec.items.forEach(it => { it.sec = sec; const ph = PHOTOS[it.n]; if (ph){ it.img = 'photos/'+ph[0]+'.webp'; it.bg1 = ph[1]; it.bg2 = ph[2]; } }));
+function svgFor(it, big){ if (it.img) return `<img src="${it.img}" alt="${big ? it.n : ''}" ${big?'':'loading="lazy"'}>`;
+  const s = it.sec; if (s.id==='blended') return it.kind==='soda' ? drawSoda(it) : drawFrappe(it); return s.draw(it); }
+
+/* ---------- viewer ---------- */
+const $ = id => document.getElementById(id);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let sec = 0, idx = 0, busy = false, current = null;
+const dock = $('dock'), thumbs = $('thumbs'), wrap = $('dishWrap');
+
+MENU.forEach((s,i) => { const b = document.createElement('button'); b.role='tab'; b.id='tab-'+s.id; b.setAttribute('aria-selected', 'false');
+  b.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${s.icon}</svg>${s.label}`;
+  b.addEventListener('click', () => openSection(i, 0)); dock.appendChild(b); });
+
+function splitName(it){ const w = it.n.split(' '); if (w.length === 1) return [it.sec.label === 'Hot' ? 'hot' : it.sec.label.toLowerCase(), it.n];
+  if (w.length >= 4) return [w.slice(0, w.length-2).join(' '), w.slice(-2).join(' ')]; return [w.slice(0,-1).join(' '), w[w.length-1]]; }
+
+function renderThumbs(){ const s = MENU[sec]; thumbs.innerHTML = '';
+  s.items.forEach((it,i) => { const b = document.createElement('button'); b.className='thumb'; b.setAttribute('role','option'); b.setAttribute('aria-label', it.n);
+    b.innerHTML = svgFor(it) + `<span>${it.n}</span>`; b.addEventListener('click', () => go(i)); thumbs.appendChild(b); });
+  $('listTitle').textContent = s.title; $('listSub').textContent = `${s.items.length} items. Tap one to see it above.`;
+  const rows = $('rows'); rows.innerHTML = '';
+  s.items.forEach((it,i) => { const r = document.createElement('button'); r.className='row'; r.innerHTML = `${svgFor(it)}<span><b>${it.n}</b><em>${it.d}</em></span><span class="go">View ↑</span>`;
+    r.addEventListener('click', () => { go(i); document.querySelector('.room').scrollIntoView({behavior: reduce?'auto':'smooth'}); }); rows.appendChild(r); });
+}
+
+function textIn(el, txt){ el.textContent = txt; if (reduce) return; el.animate([{transform:'translateY(105%)'},{transform:'translateY(0)'}], {duration:520, easing:'cubic-bezier(.2,.8,.2,1)'}); }
+
+function show(dir){ const s = MENU[sec], it = s.items[idx];
+  document.documentElement.style.setProperty('--tint', s.tint);
+  const b1 = it.bg1 || s.tint, b2 = it.bg2 || shade(s.tint, -.15);
+  const room = document.querySelector('.room'); room.style.setProperty('--bg1', b1); room.style.setProperty('--bg2', b2);
+  const lum = h => { const n=parseInt(h.slice(1),16); const c=[n>>16,n>>8&255,n&255].map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)}); return .2126*c[0]+.7152*c[1]+.0722*c[2]; };
+  room.style.setProperty('--on', lum(b1) > .32 ? '#171a19' : '#f7f3ec');
+  const [a,b] = splitName(it); textIn($('l1'), a); textIn($('l2'), b);
+  $('cat').textContent = s.title; $('count').textContent = `${String(idx+1).padStart(2,'0')} / ${String(s.items.length).padStart(2,'0')}`;
+  $('badge').innerHTML = `${String(idx+1).padStart(2,'0')}<small>of ${s.items.length}</small>`;
+  $('cName').textContent = it.n; $('cDesc').textContent = it.d;
+  $('cTags').innerHTML = it.tags.map(t => `<li class="${t==='Signature'?'sig':''}">${t}</li>`).join('');
+  [...thumbs.children].forEach((t,i) => { const on = i===idx; t.setAttribute('aria-current', on); t.setAttribute('aria-selected', on); if (on) t.scrollIntoView({block:'nearest', inline:'center', behavior: reduce?'auto':'smooth'}); });
+  // dish swap: old one spins out, new one spins in
+  const nd = document.createElement('div'); nd.className = 'dish' + (it.img ? '' : ' svg'); nd.innerHTML = svgFor(it, true); wrap.appendChild(nd);
+  const old = current; current = nd;
+  if (reduce || dir === 0 && !old){ if (old) old.remove(); return; }
+  const sgn = dir < 0 ? -1 : 1;
+  const spin = it.img ? 34 : 140;
+  nd.animate([{transform:`translate(${sgn*48}%, 22%) rotate(${sgn*spin}deg) scale(.72)`, opacity:0},{transform:'none', opacity:1}], {duration:820, easing:'cubic-bezier(.2,.75,.25,1)'});
+  if (old){ const os = old.classList.contains('svg') ? 150 : 40; const an = old.animate([{transform:'none', opacity:1},{transform:`translate(${-sgn*55}%, -30%) rotate(${-sgn*os}deg) scale(.6)`, opacity:0}], {duration:700, easing:'cubic-bezier(.5,0,.75,.3)'}); an.onfinish = () => old.remove(); }
+}
+function go(i, dirHint){ const n = MENU[sec].items.length; const ni = (i + n) % n; if (ni === idx && current) return; const dir = dirHint ?? (ni > idx ? 1 : -1); idx = ni; show(dir); }
+function openSection(i, j){ sec = i; idx = j||0; [...dock.children].forEach((b,k) => b.setAttribute('aria-selected', k===i)); renderThumbs(); show(1);
+  try { history.replaceState(null, '', '#' + MENU[i].id); } catch(e){} }
+
+$('prev').addEventListener('click', () => go(idx-1, -1));
+$('next').addEventListener('click', () => go(idx+1, 1));
+addEventListener('keydown', e => { if (e.target.closest('input,textarea')) return; if (e.key==='ArrowRight') go(idx+1,1); if (e.key==='ArrowLeft') go(idx-1,-1); });
+let sx = null; wrap.addEventListener('pointerdown', e => { sx = e.clientX; });
+addEventListener('pointerup', e => { if (sx==null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 40) go(idx + (dx<0?1:-1), dx<0?1:-1); });
+wrap.style.touchAction = 'pan-y';
+
+// card tabs
+const tA = $('tabAbout'), tV = $('tabVisit');
+function tab(v){ tA.setAttribute('aria-selected', !v); tV.setAttribute('aria-selected', v); $('paneAbout').hidden = v; $('paneVisit').hidden = !v; }
+tA.addEventListener('click', () => tab(false)); tV.addEventListener('click', () => tab(true));
+
+const start = MENU.findIndex(s => s.id === location.hash.slice(1));
+openSection(start < 0 ? 0 : start, 0);
+addEventListener('hashchange', () => { const k = MENU.findIndex(s => s.id === location.hash.slice(1)); if (k >= 0 && k !== sec) openSection(k, 0); });
+</script>
+</body>
+</html>
