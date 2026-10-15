@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Hanken+Grotesk:wght@400;500;600&family=Caveat:wght@600&family=IBM+Plex+Sans+Thai:wght@400;500&display=swap">
-<link rel="preload" as="image" href="frames/f001.jpg">
+<link rel="preload" as="image" href="frames/d/f001.jpg">
 <style>
 /* Layout: one pinned scene. Scroll walks you in from Hua Mak Road, settles at the window bar,
    and the MacBook screen becomes the site. Real-place sections follow on warm paper. */
@@ -73,36 +73,35 @@ h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0
 .waypoint{position:absolute;left:var(--gut);top:calc(84px + env(safe-area-inset-top,0px));color:var(--paper);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:0;transition:opacity .4s;margin-left:max(0px,calc((100vw - 1320px)/2))}
 .waypoint b{font-family:var(--f-display);font-weight:400;letter-spacing:0;text-transform:none;font-size:1.4rem;display:block;margin-top:4px}
 
-/* the laptop screen overlay; JS sets its box */
-.screen{position:absolute;left:0;top:0;width:0;height:0;overflow:hidden;opacity:0;container-type:inline-size;color:var(--ink);background:var(--screen);border-radius:.6% / 1%}
-.panel{position:absolute;inset:0;padding:6cqi 6.5cqi;display:grid;opacity:0;transform:translateY(2.5cqi);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+/* the laptop screen overlay; JS sets its box. Sized with container units so content always fits the screen. */
+.screen{position:absolute;left:0;top:0;width:0;height:0;overflow:hidden;opacity:0;container-type:size;color:var(--ink);background:#faf8f4;border-radius:.7cqw}
+.screen::after{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:12cqw;height:3.4cqh;background:#0f1110;border-radius:0 0 1.4cqw 1.4cqw;z-index:3}
+.s-bar{position:absolute;left:0;right:0;top:0;height:11cqh;display:flex;align-items:center;justify-content:space-between;padding:0 4.5cqw;border-bottom:1px solid #ebe6dc;z-index:2;background:#faf8f4}
+.s-bar img{height:4.6cqh;width:auto;filter:brightness(0)}
+.s-bar nav{display:flex;gap:2.4cqw;font-size:2.7cqh;font-weight:500;color:#7a7a72}
+.s-bar nav span.on{color:var(--ink);font-weight:600}
+.s-bar .s-cta{font-size:2.6cqh;font-weight:600;background:var(--ink);color:#fff;border-radius:99px;padding:.9cqh 2.2cqw}
+.panel{position:absolute;left:0;right:0;top:11cqh;bottom:0;padding:5cqh 4.5cqw 5cqh;display:grid;grid-template-columns:1.08fr 1fr;gap:4cqw;opacity:0;transform:translateY(2cqh);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
 .panel.on{opacity:1;transform:none;pointer-events:auto}
-.panel .eyebrow{font-size:2.3cqi;color:var(--oak)}
-.p-about{align-content:center;gap:3cqi}
-.p-about h2{font-size:6.6cqi;line-height:1.08;max-width:24ch}
-.p-about p{margin:0;font-size:2.7cqi;color:var(--muted)}
-.p-list{grid-template-columns:1.25fr 1fr;gap:5cqi;align-items:stretch}
-.p-list .txt{display:flex;flex-direction:column;gap:2.2cqi;min-width:0}
-.p-list h2{font-size:7.4cqi;line-height:1}
-.p-list ul{list-style:none;margin:0;padding:0;display:grid;gap:1.1cqi}
-.p-list li{display:flex;justify-content:space-between;gap:2cqi;font-size:2.65cqi;padding-bottom:1.1cqi;border-bottom:1px solid color-mix(in srgb,var(--ink) 14%,transparent)}
-.p-list li span{color:var(--muted);text-align:right}
-.p-list li:hover{color:var(--oak)}
-.p-list .go{margin-top:auto;font-size:2.5cqi;font-weight:600;text-decoration:none;color:var(--oak)}
-.p-list .go:hover{text-decoration:underline}
-.p-list figure{margin:0;border-radius:1.4cqi;overflow:hidden;min-height:0}
-.p-list figure img{width:100%;height:100%;object-fit:cover;display:block}
-.p-food{grid-template-columns:1fr}
-.p-food ul{grid-template-columns:1fr 1fr;column-gap:5cqi}
-.p-space{align-content:center;gap:2cqi}
-.p-space .num{font-family:var(--f-display);font-size:21cqi;line-height:.9;letter-spacing:-.03em}
-.p-space .num sup{font-size:.28em;vertical-align:top;letter-spacing:0;margin-left:1cqi;font-family:var(--f-body);font-weight:600;position:relative;top:1.6cqi}
-.p-space p{margin:0;font-size:2.9cqi;max-width:48ch}
-.p-space .go{font-size:2.5cqi;font-weight:600;color:var(--oak);text-decoration:none}
-.steps{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:5px;border-radius:999px;background:color-mix(in srgb,var(--ink) 82%,transparent);backdrop-filter:blur(8px);opacity:0;transition:opacity .4s;flex-wrap:wrap;justify-content:center;width:max-content;max-width:calc(100% - 32px)}
-.steps button{all:unset;cursor:pointer;color:var(--paper);font-size:.78rem;letter-spacing:.08em;padding:7px 12px;border-radius:999px;border:1px solid color-mix(in srgb,var(--paper) 30%,transparent);opacity:.7}
+.panel .txt{display:flex;flex-direction:column;justify-content:center;gap:2.4cqh;min-width:0}
+.panel .eyebrow{font-size:2.5cqh;color:var(--oak)}
+.panel h2{font-size:7.6cqh;line-height:1.04;letter-spacing:-.01em}
+.panel p{margin:0;font-size:3.2cqh;line-height:1.45;color:var(--muted)}
+.panel ul{list-style:none;margin:0;padding:0;display:grid;gap:1.3cqh}
+.panel li{display:flex;justify-content:space-between;gap:2cqw;font-size:3.1cqh;padding-bottom:1.3cqh;border-bottom:1px solid #e8e3d9;white-space:nowrap}
+.panel li span{color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.panel .go{align-self:flex-start;margin-top:1cqh;font-size:2.9cqh;font-weight:600;text-decoration:none;color:#fff;background:var(--ink);border-radius:99px;padding:1.4cqh 3cqw}
+.panel .go:hover{background:var(--oak)}
+.panel figure{margin:0;border-radius:1.6cqw;overflow:hidden;min-height:0;position:relative;background:#eee8dd}
+.panel figure img{width:100%;height:100%;object-fit:cover;display:block}
+.panel figure figcaption{position:absolute;left:2cqw;bottom:2cqh;font-size:2.4cqh;font-weight:600;color:#fff;background:rgba(23,26,25,.55);backdrop-filter:blur(6px);padding:.8cqh 1.8cqw;border-radius:99px}
+.p-about h2 .script{font-size:1.15em}
+.steps{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:5px;border-radius:999px;background:color-mix(in srgb,var(--ink) 82%,transparent);backdrop-filter:blur(8px);opacity:0;transition:opacity .4s;flex-wrap:nowrap;max-width:calc(100% - 24px);overflow-x:auto;scrollbar-width:none}
+.steps::-webkit-scrollbar{display:none}
+.steps button{all:unset;flex:none;cursor:pointer;color:var(--paper);font-size:.78rem;letter-spacing:.06em;padding:7px 13px;border-radius:999px;opacity:.75}
 .steps button.on{background:var(--paper);color:var(--ink);opacity:1}
 .steps button:focus-visible{outline:2px solid var(--oak)}
+.film-fade{position:absolute;left:0;right:0;pointer-events:none;opacity:0}
 
 /* ---------- paper sections ---------- */
 .wrap{max-width:1320px;margin:0 auto}
@@ -204,14 +203,18 @@ section.band{padding-left:var(--gut);padding-right:var(--gut-r);padding-block:cl
 @media (max-width:760px){
   .nav-left{display:flex;gap:14px;font-size:.84rem}
   .logo img{height:30px}
-  .p-list{grid-template-columns:1fr}
-  .p-list figure{display:none}
-  .p-list li{font-size:max(11px,2.65cqi)}
-  .p-list .go,.panel .eyebrow{font-size:max(10px,2.5cqi)}
-  .p-about p,.p-space p{font-size:max(11.5px,2.9cqi)}
-  .p-food ul{grid-template-columns:1fr}
-  .p-food li:nth-child(n+6){display:none}
-  .steps button{padding:6px 9px;font-size:.72rem}
+  .steps button{padding:6px 10px;font-size:.72rem}
+  .panel{grid-template-columns:1.25fr 1fr;padding:4cqh 4cqw;gap:3cqw}
+  .panel h2{font-size:8.4cqh}
+  .panel li{font-size:3.7cqh}
+  .panel li span{display:none}
+  .panel p{font-size:3.7cqh}
+  .panel .eyebrow{font-size:3cqh}
+  .panel .go{font-size:3.4cqh}
+  .s-bar nav{display:none}
+  .s-bar img{height:5.4cqh}
+  .s-bar .s-cta{font-size:3.2cqh}
+  .hero-copy h1{font-size:2.5rem}
   .site-head .bar{grid-template-columns:auto 1fr auto;gap:10px}
   .logo{justify-self:center}
   .pill{padding:8px 13px;font-size:.8rem}
@@ -245,7 +248,7 @@ section.band{padding-left:var(--gut);padding-right:var(--gut-r);padding-block:cl
 <main id="top">
 <section id="walk" aria-label="Walk into VichSpace">
   <div class="stage" id="stage">
-    <img class="poster" id="poster" src="frames/f001.jpg" alt="VichSpace building on Hua Mak Road">
+    <img class="poster" id="poster" src="frames/d/f001.jpg" alt="VichSpace building on Hua Mak Road">
     <canvas id="film" aria-hidden="true"></canvas>
     <div class="veil" id="veil"></div>
 
@@ -261,71 +264,71 @@ section.band{padding-left:var(--gut);padding-right:var(--gut-r);padding-block:cl
     <div class="waypoint" id="waypoint">Now passing<b id="wpName">Hua Mak Road</b></div>
 
     <div class="screen" id="screen">
+      <div class="s-bar"><img src="img/logo.svg" alt=""><nav><span data-n="0">About</span><span data-n="1">Drinks</span><span data-n="2">Food</span><span data-n="3">Desserts</span><span data-n="4">Space</span></nav><span class="s-cta">Book a Seat</span></div>
       <article class="panel p-about" data-i="0">
-        <span class="eyebrow">About us</span>
-        <h2>A bright room on Hua Mak Road where the coffee is good and <span class="script">the seat is yours</span> for the day.</h2>
-        <p>Read quietly, work all day, or meet your team upstairs. Outlets, free Wi-Fi and parking in the building.</p>
+        <div class="txt">
+          <span class="eyebrow">About us</span>
+          <h2>Good coffee, a calm room and <span class="script">a seat that's yours</span> all day.</h2>
+          <p>A bright café on Hua Mak Road with free co-working upstairs. Outlets, Wi-Fi and parking included.</p>
+          <a class="go" href="space.html">Visit us →</a>
+        </div>
+        <figure><img src="img/screen-about.webp" alt="VichSpace café with window seats and soft daylight"></figure>
       </article>
-      <article class="panel p-list" data-i="1">
+      <article class="panel" data-i="1">
         <div class="txt">
           <span class="eyebrow">Drinks</span>
           <h2>From the bar</h2>
           <ul>
-            <li>Vich Black <span>salted caramel mousse</span></li>
-            <li>Vich White <span>milk coffee, mousse top</span></li>
-            <li>Orange Latte <span>hot</span></li>
-            <li>Yuzu Americano <span>iced</span></li>
-            <li>Dirty Coffee <span>iced</span></li>
-            <li>Yuzu Matcha <span>iced</span></li>
+            <li>Vich Black <span>House signature</span></li>
+            <li>Vich White <span>House signature</span></li>
+            <li>Yuzu Americano <span>Iced</span></li>
+            <li>Orange Latte <span>Hot</span></li>
           </ul>
-          <a class="go" href="menu.html#hot">All drinks →</a>
+          <a class="go" href="menu.html#hot">See all drinks →</a>
         </div>
-        <figure><img src="img/about-drink.webp" alt="Iced orange americano, latte and orange slices on an orange table" style="object-position:40% 50%"></figure>
+        <figure><img src="img/screen-drinks.webp" alt="Iced orange americano and latte"></figure>
       </article>
-      <article class="panel p-list" data-i="2">
+      <article class="panel" data-i="2">
         <div class="txt">
           <span class="eyebrow">Food</span>
           <h2>Something proper to eat</h2>
           <ul>
-            <li>Ham &amp; cheese croissant</li>
-            <li>Chicken Caesar croissant</li>
             <li>Garlic pepper pork <span>with rice</span></li>
             <li>Chicken stew <span>with rice</span></li>
-            <li>Tuna salad <span>fresh orange</span></li>
+            <li>Ham &amp; cheese croissant</li>
+            <li>Baked chicken salad</li>
           </ul>
-          <a class="go" href="menu.html#food">All food →</a>
+          <a class="go" href="menu.html#food">See all food →</a>
         </div>
-        <figure><img src="photos/baked-chicken-salad.webp" alt="Baked chicken salad" style="object-position:50% 55%"></figure>
+        <figure><img src="img/screen-food.webp" alt="Baked chicken salad"></figure>
       </article>
-      <article class="panel p-list" data-i="3">
+      <article class="panel" data-i="3">
         <div class="txt">
           <span class="eyebrow">Desserts</span>
           <h2>From the case</h2>
           <ul>
             <li>Hokkaido crème brûlée cheesecake</li>
-            <li>Hokkaido tiramisu cheesecake</li>
             <li>Mixed berry waffle</li>
             <li>Half-baked cookie</li>
-            <li>Cinnamon croissant</li>
             <li>Ice cream <span>yuzu · matcha</span></li>
           </ul>
-          <a class="go" href="menu.html#desserts">All desserts →</a>
+          <a class="go" href="menu.html#desserts">See all desserts →</a>
         </div>
-        <figure><img src="img/about-desserts.webp" alt="Mixed berry waffle, pancakes and cheesecake" style="object-position:45% 50%"></figure>
+        <figure><img src="img/screen-desserts.webp" alt="Waffle, pancakes and cheesecake"></figure>
       </article>
-      <article class="panel p-list" data-i="4">
+      <article class="panel" data-i="4">
         <div class="txt">
           <span class="eyebrow">Space</span>
           <h2>Work upstairs. It's free.</h2>
           <ul>
-            <li>Co-working, 2nd floor <span>free</span></li>
-            <li>Wi-Fi, outlets, parking <span>included</span></li>
+            <li>Co-working, 2nd floor <span>Free</span></li>
             <li>Meeting rooms <span>4–50 people</span></li>
+            <li>Wi-Fi · outlets · parking</li>
             <li>Open daily <span>7:00–20:00</span></li>
           </ul>
-          <a class="cta-s" href="space.html">Explore the space →</a>
+          <a class="go" href="space.html">Explore &amp; book →</a>
         </div>
-        <figure><img src="img/cowork-2.webp" alt="Co-working lounge with navy sofas and orange cushions" style="object-position:40% 50%"></figure>
+        <figure><img src="img/screen-space.webp" alt="Co-working lounge with navy sofas"></figure>
       </article>
     </div>
     <div class="steps" id="steps" role="tablist" aria-label="Screens">
@@ -382,15 +385,17 @@ section.band{padding-left:var(--gut);padding-right:var(--gut-r);padding-block:cl
 
 <script>
 (() => {
-  const N = 142, FW = 1280, FH = 720;
-  // MacBook still: 1280x714, screen box measured in image pixels
-  const MB = { w:1280, h:714, sx:467, sy:186, sw:385, sh:254 };
+  const narrowQ = matchMedia('(max-width: 760px)');
+  const SETS = { d:{ n:212, w:1280, h:720, dir:'frames/d' }, m:{ n:182, w:960, h:540, dir:'frames/m' } };
+  // MacBook still = the video's last frame (1600x900); screen box measured in its pixels
+  const MB = { w:1600, h:900, sx:583, sy:232, sw:484, sh:322 };
   const walk = document.getElementById('walk');
   const stage = document.getElementById('stage');
   const cv = document.getElementById('film');
   const ctx = cv.getContext('2d');
   const screen = document.getElementById('screen');
   const panels = [...screen.querySelectorAll('.panel')];
+  const navDots = [...screen.querySelectorAll('.s-bar nav span')];
   const steps = document.getElementById('steps');
   const stepBtns = [...steps.querySelectorAll('button')];
   const hero = document.getElementById('heroCopy');
@@ -400,111 +405,112 @@ section.band{padding-left:var(--gut);padding-right:var(--gut-r);padding-block:cl
   const head = document.getElementById('head');
   const poster = document.getElementById('poster');
 
-  // phase boundaries in walk progress (0..1)
-  const VIDEO_END = 0.46, ZOOM_END = 0.56, PANEL_START = 0.58;
+  const VIDEO_END = 0.5, ZOOM_END = 0.6, PANEL_START = 0.62;
   const NP = panels.length;
   const panelAt = i => PANEL_START + (i + 0.5) * (1 - PANEL_START) / NP;
 
-  const frames = new Array(N);
-  const loaded = new Array(N).fill(false);
+  let set = narrowQ.matches ? SETS.m : SETS.d;
+  let frames = [], loaded = [];
   const pad = n => String(n).padStart(3, '0');
-  function load(i){ if (frames[i]) return; const im = new Image(); im.decoding='async';
-    im.onload = () => { loaded[i] = true; if (i === 0) poster.hidden = true; draw(); };
-    im.src = `frames/f${pad(i+1)}.jpg`; frames[i] = im; }
-  // load coarse-to-fine so scrubbing works early
-  [16,8,4,2,1].forEach(step => { for (let i=0;i<N;i+=step) load(i); });
-  const mac = new Image(); let macOk = false; mac.onload = () => { macOk = true; draw(); }; mac.src = 'img/macbook.jpg';
+  function loadSet(){
+    frames = new Array(set.n); loaded = new Array(set.n).fill(false);
+    const order = [];
+    [16,8,4,2,1].forEach(step => { for (let i=0;i<set.n;i+=step) if (!order.includes(i)) order.push(i); });
+    order.forEach(i => { const im = new Image(); im.decoding = 'async';
+      im.onload = () => { loaded[i] = true; if (i === 0) poster.hidden = true; req(); };
+      im.src = `${set.dir}/f${pad(i+1)}.jpg`; frames[i] = im; });
+  }
+  const mac = new Image(); let macOk = false; mac.onload = () => { macOk = true; req(); }; mac.src = 'img/macbook.jpg';
+  function nearest(i){ if (loaded[i]) return frames[i]; for (let d=1; d<set.n; d++){ if (i-d>=0&&loaded[i-d]) return frames[i-d]; if (i+d<set.n&&loaded[i+d]) return frames[i+d]; } return null; }
 
-  function nearest(i){ if (loaded[i]) return frames[i]; for (let d=1; d<N; d++){ if (i-d>=0&&loaded[i-d]) return frames[i-d]; if (i+d<N&&loaded[i+d]) return frames[i+d]; } return null; }
-
-  let W=0,H=0,DPR=1;
+  let W=0,H=0,DPR=1, narrow=false;
   function size(){ DPR = Math.min(window.devicePixelRatio||1, 2); W = stage.clientWidth; H = stage.clientHeight;
-    cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR); draw(); }
+    cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
+    const n = narrowQ.matches; if (n !== narrow || !frames.length){ narrow = n; set = n ? SETS.m : SETS.d; loadSet(); }
+    req(); }
 
   const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
   const ease = t => t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
   const lerp = (a,b,t) => a + (b-a)*t;
-
   function progress(){ const r = walk.getBoundingClientRect(); const span = walk.offsetHeight - H; return clamp(-r.top / span, 0, 1); }
 
-  // where the MacBook image sits: cover at t=0, framed on the screen at t=1
-  function macRect(t){
-    const cover = Math.max(W/MB.w, H/MB.h);
-    const narrow = W < 760;
-    const targetW = narrow ? W*0.94 : Math.min(W*0.5, (H*0.52)*(MB.sw/MB.sh));
-    const zoomS = targetW / MB.sw;
-    const s = lerp(cover, zoomS, t);
-    // screen centre: at t=0 it is wherever cover puts it; at t=1 it sits at (W/2, H*0.46)
-    const scx0 = (W - MB.w*cover)/2 + (MB.sx+MB.sw/2)*cover;
-    const scy0 = (H - MB.h*cover)/2 + (MB.sy+MB.sh/2)*cover;
-    const scx = lerp(scx0, W/2, t), scy = lerp(scy0, H*0.46, t);
-    const x = scx - (MB.sx+MB.sw/2)*s, y = scy - (MB.sy+MB.sh/2)*s;
-    return { x, y, s };
+  // Where a 16:9 frame sits. Desktop: covers the screen. Phone: true shape in a tall cinematic band, never stretched.
+  function baseRect(){
+    const ar = 16/9;
+    let h, w;
+    if (narrow){ h = Math.max(W/ar, H*0.58); w = h*ar; }
+    else { const s = Math.max(W/ar, H); h = s; w = s*ar; if (w < W){ w = W; h = W/ar; } }
+    const cx = W/2, cy = narrow ? H*0.42 : H/2;
+    return { x: cx - w/2, y: cy - h/2, w, h };
   }
-  function drawCover(img, iw, ih, alpha){
-    const s = Math.max(W/iw, H/ih); const dw = iw*s, dh = ih*s;
-    ctx.globalAlpha = alpha; ctx.drawImage(img, (W-dw)/2, (H-dh)/2, dw, dh); ctx.globalAlpha = 1;
+  // MacBook placement: starts exactly on the frame rect, then frames its screen.
+  function macRect(t){
+    const b = baseRect();
+    const s0 = b.w / MB.w;
+    const targetW = narrow ? W*0.94 : Math.min(W*0.52, (H*0.58)*(MB.sw/MB.sh));
+    const s1 = targetW / MB.sw;
+    const s = lerp(s0, s1, t);
+    const scx0 = b.x + (MB.sx+MB.sw/2)*s0, scy0 = b.y + (MB.sy+MB.sh/2)*s0;
+    const scx = lerp(scx0, W/2, t), scy = lerp(scy0, narrow ? H*0.40 : H*0.45, t);
+    return { x: scx - (MB.sx+MB.sw/2)*s, y: scy - (MB.sy+MB.sh/2)*s, s };
+  }
+  function fadeEdges(y, h){ // soft fade above and below the band on phones
+    if (!narrow) return;
+    let g = ctx.createLinearGradient(0, y, 0, y + h*0.18); g.addColorStop(0,'#171a19'); g.addColorStop(1,'rgba(23,26,25,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, y-1, W, h*0.18);
+    g = ctx.createLinearGradient(0, y + h*0.82, 0, y + h); g.addColorStop(0,'rgba(23,26,25,0)'); g.addColorStop(1,'#171a19');
+    ctx.fillStyle = g; ctx.fillRect(0, y + h*0.82, W, h*0.18+1);
   }
 
-  const places = [[0,'Hua Mak Road'],[0.22,'The building'],[0.5,'The lobby'],[0.66,'VichSpace café'],[0.86,'Past the counter']];
+  const places = [[0,'Hua Mak Road'],[0.17,'The entrance'],[0.33,'The lobby'],[0.5,'VichSpace café'],[0.66,'The counter'],[0.83,'Window bar']];
   let lastPanel = -1, raf = 0;
-  function draw(){ raf = 0;
-    if (!W) return;
+  function draw(){ raf = 0; if (!W) return;
     const p = progress();
     ctx.setTransform(DPR,0,0,DPR,0,0);
     ctx.fillStyle = '#171a19'; ctx.fillRect(0,0,W,H);
-
-    // 1. walk-in footage
     const vp = clamp(p / VIDEO_END, 0, 1);
-    const fi = Math.round(vp * (N-1));
-    const fr = nearest(fi);
-    const z = clamp((p - VIDEO_END) / (ZOOM_END - VIDEO_END), 0, 1);
-    const ze = ease(z);
-    if (fr && z < 1) drawCover(fr, FW, FH, 1);
-    // 2. cross into the MacBook still, then frame its screen
-    if (macOk && p > VIDEO_END - 0.03){
-      const a = clamp((p - (VIDEO_END - 0.03)) / 0.06, 0, 1);
+    const fr = nearest(Math.round(vp * (set.n-1)));
+    const z = clamp((p - VIDEO_END) / (ZOOM_END - VIDEO_END), 0, 1), ze = ease(z);
+    const b = baseRect();
+    if (fr && p < VIDEO_END + 0.005){ ctx.drawImage(fr, b.x, b.y, b.w, b.h); fadeEdges(b.y, b.h); }
+    if (macOk && p >= VIDEO_END - 0.005){
       const m = macRect(ze);
-      ctx.globalAlpha = a; ctx.drawImage(mac, m.x, m.y, MB.w*m.s, MB.h*m.s); ctx.globalAlpha = 1;
-      // screen overlay box
-      const pin = clamp((p - ZOOM_END + 0.02) / 0.04, 0, 1);
-      screen.style.left = (m.x + MB.sx*m.s) + 'px';
-      screen.style.top = (m.y + MB.sy*m.s) + 'px';
-      screen.style.width = (MB.sw*m.s) + 'px';
-      screen.style.height = (MB.sh*m.s) + 'px';
-      screen.style.opacity = pin;
-      steps.style.top = Math.min(H - 64, m.y + (MB.sy+MB.sh)*m.s + Math.max(56, MB.sh*m.s*0.36)) + 'px';
+      ctx.drawImage(mac, m.x, m.y, MB.w*m.s, MB.h*m.s);
+      if (narrow) fadeEdges(m.y, MB.h*m.s);
+      const pin = clamp((p - ZOOM_END + 0.025) / 0.04, 0, 1);
+      Object.assign(screen.style, { left:(m.x + MB.sx*m.s)+'px', top:(m.y + MB.sy*m.s)+'px', width:(MB.sw*m.s)+'px', height:(MB.sh*m.s)+'px', opacity:pin });
+      const below = m.y + (MB.sy+MB.sh)*m.s;
+      steps.style.top = Math.min(H - 58, below + (narrow ? 28 : Math.max(40, MB.sh*m.s*0.28))) + 'px';
       steps.style.opacity = pin;
     } else { screen.style.opacity = 0; steps.style.opacity = 0; }
 
-    // panels
     let pi = -1;
     if (p >= ZOOM_END - 0.01) pi = clamp(Math.floor((p - PANEL_START) / ((1 - PANEL_START)/NP)), 0, NP-1);
-    if (pi !== lastPanel){ panels.forEach((el,i)=>el.classList.toggle('on', i===pi)); stepBtns.forEach((b,i)=>{b.classList.toggle('on', i===pi); b.setAttribute('aria-selected', i===pi);}); lastPanel = pi; }
-
-    // overlays
-    const h = clamp(1 - p/0.045, 0, 1);
+    if (pi !== lastPanel){
+      panels.forEach((el,i)=>el.classList.toggle('on', i===pi));
+      navDots.forEach((el,i)=>el.classList.toggle('on', i===pi));
+      stepBtns.forEach((bt,i)=>{ bt.classList.toggle('on', i===pi); bt.setAttribute('aria-selected', i===pi); });
+      lastPanel = pi;
+    }
+    const h = clamp(1 - p/0.04, 0, 1);
     hero.style.opacity = h; cue.style.opacity = h;
-    veil.style.opacity = lerp(0.35, 1, h) * (1 - ze);
-    const showWp = vp > 0.06 && vp < 0.98;
+    veil.style.opacity = narrow ? 0 : lerp(0.35, 1, h) * (1 - ze);
+    const showWp = vp > 0.05 && vp < 0.97;
     wp.style.opacity = showWp ? 1 : 0;
     if (showWp){ let name = places[0][1]; for (const [at,n] of places) if (vp >= at) name = n; if (wpName.textContent !== name) wpName.textContent = name; }
     head.classList.toggle('solid', p > VIDEO_END - 0.01 || walk.getBoundingClientRect().bottom < 64);
   }
-  const req = () => { if (!raf) raf = requestAnimationFrame(draw); };
+  function req(){ if (!raf) raf = requestAnimationFrame(draw); }
   addEventListener('scroll', req, { passive:true });
   addEventListener('resize', size);
   size();
 
-  // jump to a screen
   function goPanel(i){
     const span = walk.offsetHeight - H;
     const y = walk.offsetTop + panelAt(i) * span;
-    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-    scrollTo({ top:y, behavior: smooth ? 'smooth' : 'auto' });
+    scrollTo({ top:y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   }
-  stepBtns.forEach(b => b.addEventListener('click', () => goPanel(+b.dataset.go)));
-  document.querySelectorAll('.nav-left a[data-panel]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); goPanel(+a.dataset.panel); }));
+  stepBtns.forEach(bt => bt.addEventListener('click', () => goPanel(+bt.dataset.go)));
   document.getElementById('toTop').addEventListener('click', e => { e.preventDefault(); scrollTo({ top:0, behavior:'smooth' }); });
 
   // copy phone

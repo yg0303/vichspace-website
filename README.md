@@ -8,7 +8,7 @@ Static website (plain HTML/CSS/JS, no build step).
 - `space.html` — Co-working floor, meeting rooms, café gallery
 
 ## Folders
-- `frames/` — 142 frames of the walk-in video (scrubbed on scroll)
+- `frames/d` and `frames/m` — the cinematic walk-in as scroll frames (desktop 1280px, phone 960px)
 - `photos/` — menu photos (one per item)
 - `img/` — logo, interior, meeting rooms, map, MacBook shot
 
