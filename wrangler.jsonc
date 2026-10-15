@@ -1,0 +1,10 @@
+{
+  // Cloudflare config: serves this folder as a static site (works for Workers and Pages)
+  "name": "vichspace-website",
+  "compatibility_date": "2025-06-01",
+  "assets": {
+    "directory": "./",
+    "not_found_handling": "404-page"
+  },
+  "pages_build_output_dir": "./"
+}

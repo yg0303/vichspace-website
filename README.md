@@ -25,6 +25,12 @@ Static website (plain HTML/CSS/JS, no build step).
 3. Cloudflare: **Workers & Pages → Create → Pages → Connect to Git** → pick the repo.
    Framework preset: **None**. Build command: *(leave empty)*. Build output directory: `/`.
 
+## If Cloudflare set it up as a Worker
+`wrangler.jsonc` makes this folder deploy as static assets. In the Worker's build settings use:
+- Build command: *(empty)*
+- Deploy command: `npx wrangler deploy`
+- Root directory: `/`
+
 ## Use your own domain later
 Project → **Custom domains** → add `vichspace.co` (the domain's DNS must be on Cloudflare, or add the CNAME it shows you).
 
